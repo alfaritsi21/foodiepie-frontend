@@ -24,7 +24,7 @@
                   type="text"
                   class="input-text"
                   placeholder="0"
-                  v-model="count"
+                  :value="count"
                 />
                 <b-button
                   type="button"

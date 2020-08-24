@@ -71,7 +71,7 @@
           <h5>Please add some items from the menu</h5>
         </div>
         <div v-else class="mar-top-20">
-          <Cart name="Kopi" price="2000" @increment="incrementCount" v-bind:count="count" />
+          <Cart name="Kopi" price="2000" />
           <!-- <p>{{count}}</p> -->
         </div>
       </b-col>

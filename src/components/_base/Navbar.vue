@@ -60,7 +60,13 @@
                         <h5>Please add some items from the menu</h5>
                       </div>
                       <div v-else class="mar-top-20">
-                        <Cart name="Kopi" price="2000" @increment="incrementCount" />
+                        <Cart
+                          name="Kopi"
+                          price="2000"
+                          :count="count"
+                          @increment="incrementCount"
+                          @decrement="decrementCount"
+                        />
                       </div>
                     </div>
                   </div>
@@ -109,6 +115,11 @@ export default {
   methods: {
     incrementCount(data) {
       this.count += data
+    },
+    decrementCount(data) {
+      if (this.count > 0) {
+        this.count -= data
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid class="height">
+  <b-container fluid>
     <b-row>
       <b-col cols="12" sm="12" md="8" lg="8" xl="8">
         <b-row>
@@ -19,7 +19,10 @@
                 <img src="../assets/clipboard.png" alt />
               </b-col>
               <b-col class="pad-upside">
-                <img src="../assets/add.png" alt />
+                <a href="#">
+                  <ModalMenu />
+                  <!-- <img src="../assets/add.png" alt /> -->
+                </a>
               </b-col>
             </b-row>
           </b-col>
@@ -58,9 +61,9 @@
                 </b-col>
               </b-row>
             </b-container>
-            <Card name="Kopi" price="2000" @increment="incrementCount" />
+            <!-- <Card name="Kopi" price="2000" @increment="incrementCount" />
             <Card name="Susu" price="3000" />
-            <p>{{count}}</p>
+            <p>{{count}}</p>-->
           </b-col>
         </b-row>
       </b-col>
@@ -71,8 +74,13 @@
           <h5>Please add some items from the menu</h5>
         </div>
         <div v-else class="mar-top-20">
-          <Cart name="Kopi" price="2000" />
-          <!-- <p>{{count}}</p> -->
+          <Cart
+            name="Kopi"
+            price="2000"
+            :count="count"
+            @increment="incrementCount"
+            @decrement="decrementCount"
+          />
         </div>
       </b-col>
     </b-row>
@@ -80,15 +88,16 @@
 </template>
 
 <script>
-import Card from './_base/Card.vue'
+// import Card from './_base/Card.vue'
 import axios from 'axios'
 import Cart from './_base/Cart.vue'
+import ModalMenu from './_base/ModalMenu'
 
 export default {
   name: 'MainContent',
   components: {
-    Card,
-    Cart
+    Cart,
+    ModalMenu
   },
   data() {
     return {
@@ -108,6 +117,11 @@ export default {
   methods: {
     incrementCount(data) {
       this.count += data
+    },
+    decrementCount(data) {
+      if (this.count > 0) {
+        this.count -= data
+      }
     },
     addToCart(data) {
       const setCart = {

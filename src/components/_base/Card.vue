@@ -2,7 +2,7 @@
   <div class="c-container">
     <h4>{{name}}</h4>
     <p>{{price}}</p>
-    <button type="button" @click="increment()">Add to Cart</button>
+    <b-button block variant="danger" type="button" @click="increment()">Add to Cart</b-button>
   </div>
 </template>
 

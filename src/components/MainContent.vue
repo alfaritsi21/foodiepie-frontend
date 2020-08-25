@@ -35,6 +35,7 @@
             class="default-container align-center main-content"
           >
             <b-container class="bv-example-row mar-10">
+              <SortOrder />
               <b-row class="pad-top-10">
                 <b-col
                   cols="12"
@@ -56,14 +57,55 @@
                   >
                     <b-card-text>Rp. {{item.product_price}}</b-card-text>
 
-                    <b-button variant="primary" @click="addToCart(item)">Add to Cart</b-button>
+                    <b-button
+                      v-if="addToCartButton === true"
+                      block
+                      variant="primary"
+                      @click="addToCart(item)"
+                      v-b-tooltip.hover
+                      title="Add Order"
+                    >Add to Cart</b-button>
+                    <b-button
+                      v-else
+                      block
+                      variant="danger"
+                      @click="addToCart(item)"
+                      v-b-tooltip.hover
+                      title="Cancel Order"
+                    >Cancel</b-button>
+
+                    <b-container fluid class="bv-example-row mt-1 pr-0 pl-0">
+                      <b-row>
+                        <b-col md="6">
+                          <b-button
+                            block
+                            variant="outline-success"
+                            @click="addToCart(item)"
+                            v-b-tooltip.hover
+                            title="Edit Product"
+                            class="mt-2"
+                          >
+                            <ModalEditProduct />
+                          </b-button>
+                        </b-col>
+                        <b-col md="6">
+                          <b-button
+                            block
+                            variant="outline-danger"
+                            @click="addToCart(item)"
+                            v-b-tooltip.hover
+                            title="Delete Product"
+                            class="mt-2"
+                          >
+                            <ModalDeleteProduct />
+                          </b-button>
+                        </b-col>
+                      </b-row>
+                    </b-container>
                   </b-card>
                 </b-col>
               </b-row>
             </b-container>
-            <!-- <Card name="Kopi" price="2000" @increment="incrementCount" />
-            <Card name="Susu" price="3000" />
-            <p>{{count}}</p>-->
           </b-col>
         </b-row>
       </b-col>
@@ -92,27 +134,34 @@
 import axios from 'axios'
 import Cart from './_base/Cart.vue'
 import ModalMenu from './_base/ModalMenu'
+import ModalEditProduct from './_base/ModalEditProduct'
+import ModalDeleteProduct from './_base/ModalDeleteProduct'
+import SortOrder from './_base/SortOrder'
 
 export default {
   name: 'MainContent',
   components: {
     Cart,
-    ModalMenu
+    ModalMenu,
+    ModalEditProduct,
+    ModalDeleteProduct,
+    SortOrder
   },
   data() {
     return {
       count: 0,
       cart: [],
       page: 1,
-      limit: 9,
+      limit: 30,
       order: 'product_id',
       order_type: 'ASC',
       products: [],
-      isShowEmpty: false
+      isShowEmpty: false,
+      addToCartButton: true
     }
   },
   created() {
-    this.get_product()
+    this.getProduct()
   },
   methods: {
     incrementCount(data) {
@@ -131,7 +180,7 @@ export default {
       this.cart = [...this.cart, setCart]
       console.log(this.cart)
     },
-    get_product() {
+    getProduct() {
       axios
         .get(
           `http://127.0.0.1:3001/product?page=${this.page}&limit=${this.limit}&order=${this.order}&order_type=${this.order_type}`

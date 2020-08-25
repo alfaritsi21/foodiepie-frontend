@@ -12,7 +12,7 @@
               <b-form-group id="input-group-1" label="Name :" label-for="input-1"></b-form-group>
             </b-col>
             <b-col cols="10">
-              <b-form-input v-model="text" placeholder="Enter product name"></b-form-input>
+              <b-form-input v-model="form.product_name" placeholder="Enter product name"></b-form-input>
             </b-col>
           </b-row>
           <b-row>
@@ -28,7 +28,11 @@
               <b-form-group id="input-group-3" label="Price :" label-for="input-3"></b-form-group>
             </b-col>
             <b-col cols="10">
-              <b-form-input type="number" v-model="name" placeholder="Enter product price"></b-form-input>
+              <b-form-input
+                type="number"
+                v-model="form.product_price"
+                placeholder="Enter product price"
+              ></b-form-input>
             </b-col>
           </b-row>
           <b-row>
@@ -37,58 +41,45 @@
             </b-col>
             <b-col cols="10">
               <div>
-                <b-form-select v-model="selected" :options="options" class="mb-3">
-                  <!-- This slot appears above the options from 'options' prop -->
+                <b-form-select v-model="form.category_id" :options="options" class="mb-3">
                   <template v-slot:first>
-                    <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
+                    <b-form-select-option :value="0" disabled>-- Please select an option --</b-form-select-option>
                   </template>
-                  <b-form-select-option value="C">Option C</b-form-select-option>
-                  <b-form-select-option value="D">Option D</b-form-select-option>
                 </b-form-select>
-              </div>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col cols="2" class="form-name">
-              <b-form-group id="input-group-5" label="Status :" label-for="input-5"></b-form-group>
-            </b-col>
-            <b-col cols="10">
-              <div class="text-left">
-                <b-form-radio v-model="selected" name="some-radios" value="A">0</b-form-radio>
-                <b-form-radio v-model="selected" name="some-radios" value="B">1</b-form-radio>
               </div>
             </b-col>
           </b-row>
         </b-form>
       </div>
-      <b-button class="mt-3" variant="primary" block @click="hideModal">Print</b-button>
+      <b-button class="mt-3" variant="primary" block @click="hideModal(); postProduct()">Add</b-button>
       <b-button
         class="mt-2"
-        variant="warning"
+        variant="danger"
         block
         @click="toggleModal"
         style="color: white;"
-      >Send Email</b-button>
+      >Cancel</b-button>
     </b-modal>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
       form: {
-        email: '',
-        name: '',
+        product_name: '',
+        product_price: 0,
+        category_id: 0,
+        product_status: 1,
         food: null,
         file2: null,
-        checked: [],
-        selected: null,
-        options: [
-          { value: 'A', text: 'Option A (from options prop)' },
-          { value: 'B', text: 'Option B (from options prop)' }
-        ]
+        checked: []
       },
+      selected: null,
+      options: [],
       foods: [
         { text: 'Select One', value: null },
         'Carrots',
@@ -98,6 +89,9 @@ export default {
       ],
       show: true
     }
+  },
+  created() {
+    this.getCategory()
   },
   methods: {
     showModal() {
@@ -127,6 +121,51 @@ export default {
       this.$nextTick(() => {
         this.show = true
       })
+    },
+    makeToast(variant = null, message) {
+      this.$bvToast.toast(`${message}`, {
+        title: 'Notification',
+        variant: variant,
+        solid: true
+      })
+    },
+    getCategory() {
+      axios
+        .get('http://127.0.0.1:3001/category')
+        .then((response) => {
+          const categories = response.data.data
+          console.log(categories)
+          for (let index = 0; index < categories.length; index++) {
+            this.options = [
+              ...this.options,
+              {
+                value: categories[index].category_id,
+                text: categories[index].category_name
+              }
+            ]
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    postProduct() {
+      axios
+        .post('http://127.0.0.1:3001/product', this.form, {})
+        .then((response) => {
+          const savedProduct = response.data.data
+          this.makeToast(
+            'success',
+            `Product ${savedProduct.product_name} succesfully created`
+          )
+        })
+        .catch((error) => {
+          console.log(error)
+          this.makeToast(
+            'danger',
+            `Product ${this.form.product_name} failed to create`
+          )
+        })
     }
   }
 }

@@ -35,7 +35,28 @@
             class="default-container align-center main-content"
           >
             <b-container class="bv-example-row mar-10">
-              <SortOrder />
+              <b-container class="bv-example-row container-sort">
+                <b-row>
+                  <b-col cols="4" md="8"></b-col>
+                  <b-col cols="3" md="2">
+                    <b-dropdown
+                      variant="none"
+                      id="dropdown-1"
+                      text="Sort by"
+                      class="m-md-2 mb-2 pl-0 pr-0"
+                    >
+                      <b-dropdown-item>First Action</b-dropdown-item>
+                      <b-dropdown-item>Second Action</b-dropdown-item>
+                    </b-dropdown>
+                  </b-col>
+                  <b-col cols="3" md="2">
+                    <b-dropdown variant="none" id="dropdown-2" text="Order by" class="m-md-2">
+                      <b-dropdown-item>First Action</b-dropdown-item>
+                      <b-dropdown-item>Second Action</b-dropdown-item>
+                    </b-dropdown>
+                  </b-col>
+                </b-row>
+              </b-container>
               <b-row class="pad-top-10">
                 <b-col
                   cols="12"
@@ -85,7 +106,7 @@
                             title="Edit Product"
                             class="mt-2"
                           >
-                            <ModalEditProduct />
+                            <ModalEditProduct :product="item" />
                           </b-button>
                         </b-col>
                         <b-col md="6">
@@ -97,7 +118,7 @@
                             title="Delete Product"
                             class="mt-2"
                           >
-                            <ModalDeleteProduct />
+                            <ModalDeleteProduct :product="item" />
                           </b-button>
                         </b-col>
                       </b-row>
@@ -106,6 +127,15 @@
                 </b-col>
               </b-row>
             </b-container>
+            <div class="overflow-auto">
+              <b-pagination-nav
+                class="pagination"
+                align="center"
+                :link-gen="linkGen"
+                :number-of-pages="pagination.totalPage"
+                use-router
+              ></b-pagination-nav>
+            </div>
           </b-col>
         </b-row>
       </b-col>
@@ -136,7 +166,6 @@ import Cart from './_base/Cart.vue'
 import ModalMenu from './_base/ModalMenu'
 import ModalEditProduct from './_base/ModalEditProduct'
 import ModalDeleteProduct from './_base/ModalDeleteProduct'
-import SortOrder from './_base/SortOrder'
 
 export default {
   name: 'MainContent',
@@ -144,26 +173,35 @@ export default {
     Cart,
     ModalMenu,
     ModalEditProduct,
-    ModalDeleteProduct,
-    SortOrder
+    ModalDeleteProduct
   },
   data() {
     return {
       count: 0,
       cart: [],
-      page: 1,
-      limit: 30,
       order: 'product_id',
       order_type: 'ASC',
       products: [],
       isShowEmpty: false,
-      addToCartButton: true
+      addToCartButton: true,
+      pagination: {
+        page: 1,
+        totalPage: 3,
+        limit: 6,
+        totalData: 17,
+        prevLink: null,
+        nextLink: null
+      }
     }
   },
   created() {
     this.getProduct()
   },
   methods: {
+    linkGen(pageNum) {
+      console.log(this.pagination)
+      return pageNum === 1 ? '?' : `?page=${pageNum}`
+    },
     incrementCount(data) {
       this.count += data
     },
@@ -183,10 +221,13 @@ export default {
     getProduct() {
       axios
         .get(
-          `http://127.0.0.1:3001/product?page=${this.page}&limit=${this.limit}&order=${this.order}&order_type=${this.order_type}`
+          `http://127.0.0.1:3001/product?page=${this.pagination.page}&limit=${this.pagination.limit}&order=${this.order}&order_type=${this.order_type}`,
+          null,
+          {}
         )
         .then((response) => {
           this.products = response.data.data
+          this.pagination = response.data.pagination
         })
         .catch((error) => {
           console.log(error)
@@ -220,5 +261,13 @@ export default {
 
 .empty-cart h5 {
   color: #cecece;
+}
+
+.pagination {
+  align-items: center;
+}
+
+.container-sort {
+  background-color: none;
 }
 </style>

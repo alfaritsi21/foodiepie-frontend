@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a id="show-btn" @click="showModal">
+    <a id="show-btn" @click="showModal(); getProduct();">
       <b-icon-trash></b-icon-trash>
     </a>
 
@@ -12,7 +12,7 @@
           <b-button class="mt-4" variant="warning" @click="toggleModal" style="color: white;">Cancel</b-button>
         </b-col>
         <b-col cols="3" md="3">
-          <b-button class="mt-4" variant="danger" @click="hideModal(); makeToast('danger');">Confirm</b-button>
+          <b-button class="mt-4" variant="danger" @click="hideModal(); deleteProduct();">Confirm</b-button>
         </b-col>
       </b-row>
     </b-modal>
@@ -20,30 +20,30 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
+  props: ['product'],
   data() {
     return {
+      product_id: [],
       form: {
-        email: '',
-        name: '',
+        product_name: this.product.product_name,
+        product_price: this.product.product_price,
+        category_id: this.product.category_id,
+        product_status: 1,
         food: null,
         file2: null,
-        checked: [],
-        selected: null,
-        options: [
-          { value: 'A', text: 'Option A (from options prop)' },
-          { value: 'B', text: 'Option B (from options prop)' }
-        ]
+        checked: []
       },
-      foods: [
-        { text: 'Select One', value: null },
-        'Carrots',
-        'Beans',
-        'Tomatoes',
-        'Corn'
-      ],
+      selected: null,
+      options: [],
+      foods: [{ text: 'Select One', value: null }],
       show: true
     }
+  },
+  created() {
+    this.getProduct()
   },
   methods: {
     showModal() {
@@ -80,6 +80,38 @@ export default {
         variant: variant,
         solid: true
       })
+    },
+    deleteProduct() {
+      axios
+        .delete(
+          `http://127.0.0.1:3001/product/${this.product.product_id}`,
+          this.form,
+          {}
+        )
+        .then((response) => {
+          const savedProduct = response.data.data
+          this.makeToast(
+            'success',
+            `Product ${savedProduct.product_name} succesfully deleted`
+          )
+        })
+        .catch((error) => {
+          console.log(error)
+          this.makeToast(
+            'danger',
+            `Product ${this.form.product_name} failed to delete`
+          )
+        })
+    },
+    getProduct() {
+      axios
+        .get('http://127.0.0.1:3001/product/')
+        .then((response) => {
+          this.products = response.data.data.product_id
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 }

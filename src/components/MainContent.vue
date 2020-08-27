@@ -37,23 +37,35 @@
             <b-container class="bv-example-row mar-10">
               <b-container class="bv-example-row container-sort">
                 <b-row>
-                  <b-col cols="4" md="8"></b-col>
-                  <b-col cols="3" md="2">
-                    <b-dropdown
+                  <b-col cols="4" md="6"></b-col>
+                  <b-col cols="4" md="3">
+                    <b-form-select
+                      v-model="order"
+                      :options="optionsOrder"
+                      @change="getProduct()"
+                      class="mb-3"
+                    ></b-form-select>
+                    <!-- <b-dropdown
                       variant="none"
                       id="dropdown-1"
                       text="Sort by"
                       class="m-md-2 mb-2 pl-0 pr-0"
                     >
-                      <b-dropdown-item>First Action</b-dropdown-item>
-                      <b-dropdown-item>Second Action</b-dropdown-item>
-                    </b-dropdown>
+                      <b-dropdown-item>Product ID</b-dropdown-item>
+                      <b-dropdown-item>Category ID</b-dropdown-item>
+                    </b-dropdown>-->
                   </b-col>
-                  <b-col cols="3" md="2">
-                    <b-dropdown variant="none" id="dropdown-2" text="Order by" class="m-md-2">
+                  <b-col cols="4" md="3">
+                    <b-form-select
+                      v-model="order_type"
+                      :options="optionsType"
+                      @change="getProduct()"
+                      class="mb-3"
+                    ></b-form-select>
+                    <!-- <b-dropdown variant="none" id="dropdown-2" text="Order by" class="m-md-2">
                       <b-dropdown-item>First Action</b-dropdown-item>
                       <b-dropdown-item>Second Action</b-dropdown-item>
-                    </b-dropdown>
+                    </b-dropdown>-->
                   </b-col>
                 </b-row>
               </b-container>
@@ -129,6 +141,7 @@
             </b-container>
             <div class="overflow-auto">
               <b-pagination-nav
+                v-model="pagination.page"
                 class="pagination"
                 align="center"
                 :link-gen="linkGen"
@@ -178,6 +191,17 @@ export default {
   data() {
     return {
       count: 0,
+      optionsOrder: [
+        { value: 'product_id', text: 'Product ID' },
+        { value: 'product_name', text: 'Product Name' },
+        { value: 'product_price', text: 'Product Price' },
+        { value: 'category_id', text: 'Category ID' },
+        { value: 'product_created_at', text: 'Product Created' }
+      ],
+      optionsType: [
+        { value: 'ASC', text: 'Ascending' },
+        { value: 'DESC', text: 'Descending' }
+      ],
       cart: [],
       order: 'product_id',
       order_type: 'ASC',

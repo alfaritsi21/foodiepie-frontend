@@ -80,13 +80,7 @@ export default {
       },
       selected: null,
       options: [],
-      foods: [
-        { text: 'Select One', value: null },
-        'Carrots',
-        'Beans',
-        'Tomatoes',
-        'Corn'
-      ],
+      foods: [{ text: 'Select One', value: null }],
       show: true
     }
   },

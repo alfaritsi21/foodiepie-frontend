@@ -37,7 +37,21 @@
             <b-container class="bv-example-row mar-10">
               <b-container class="bv-example-row container-sort">
                 <b-row>
-                  <b-col cols="4" md="6"></b-col>
+                  <b-col cols="4" md="6">
+                    <div>
+                      <mdb-form-inline>
+                        <mdbIcon icon="search" />
+                        <input
+                          v-model="form.product_name"
+                          v-on:keyup.enter="searchProduct()"
+                          class="form-control mr-sm-2"
+                          type="text"
+                          placeholder="Search Product"
+                          aria-label="Search"
+                        />
+                      </mdb-form-inline>
+                    </div>
+                  </b-col>
                   <b-col cols="4" md="3">
                     <b-form-select
                       v-model="order"
@@ -202,6 +216,9 @@ export default {
         { value: 'ASC', text: 'Ascending' },
         { value: 'DESC', text: 'Descending' }
       ],
+      form: {
+        product_name: ''
+      },
       cart: [],
       order: 'product_id',
       order_type: 'ASC',
@@ -252,6 +269,16 @@ export default {
         .then((response) => {
           this.products = response.data.data
           this.pagination = response.data.pagination
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    searchProduct() {
+      axios
+        .post('http://127.0.0.1:3001/product/search/', this.form, {})
+        .then((response) => {
+          this.products = response.data.data
         })
         .catch((error) => {
           console.log(error)

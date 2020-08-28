@@ -41,6 +41,7 @@
                     <div>
                       <mdb-form-inline>
                         <mdbIcon icon="search" />
+                        <p>Search :</p>
                         <input
                           v-model="form.product_name"
                           v-on:keyup.enter="searchProduct()"
@@ -53,6 +54,7 @@
                     </div>
                   </b-col>
                   <b-col cols="4" md="3">
+                    <p>Sort by :</p>
                     <b-form-select
                       v-model="order"
                       :options="optionsOrder"
@@ -70,6 +72,7 @@
                     </b-dropdown>-->
                   </b-col>
                   <b-col cols="4" md="3">
+                    <p>Order by :</p>
                     <b-form-select
                       v-model="order_type"
                       :options="optionsType"
@@ -105,7 +108,7 @@
                     <b-card-text>Rp. {{item.product_price}}</b-card-text>
 
                     <b-button
-                      v-if="addToCartButton === true"
+                      v-if="!isInCart(item)"
                       block
                       variant="primary"
                       @click="addToCart(item)"
@@ -116,7 +119,7 @@
                       v-else
                       block
                       variant="danger"
-                      @click="addToCart(item)"
+                      @click="removeFromCart(item)"
                       v-b-tooltip.hover
                       title="Cancel Order"
                     >Cancel</b-button>
@@ -154,14 +157,13 @@
               </b-row>
             </b-container>
             <div class="overflow-auto">
-              <b-pagination-nav
-                v-model="pagination.page"
-                class="pagination"
-                align="center"
-                :link-gen="linkGen"
-                :number-of-pages="pagination.totalPage"
-                use-router
-              ></b-pagination-nav>
+              <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage"
+                @change="handlePageChange"
+                aria-controls="my-table"
+              ></b-pagination>
             </div>
           </b-col>
         </b-row>
@@ -172,13 +174,14 @@
           <h4>Your cart is empty</h4>
           <h5>Please add some items from the menu</h5>
         </div>
-        <div v-else class="mar-top-20">
+        <div class="mar-top-20">
           <Cart
             name="Kopi"
             price="2000"
             :count="count"
-            @increment="incrementCount"
-            @decrement="decrementCount"
+            :cart="cart"
+            @increment="incrementCart"
+            @decrement="decrementCart"
           />
         </div>
       </b-col>
@@ -224,24 +227,56 @@ export default {
       order_type: 'ASC',
       products: [],
       isShowEmpty: false,
-      addToCartButton: true,
-      pagination: {
-        page: 1,
-        totalPage: 3,
-        limit: 6,
-        totalData: 17,
-        prevLink: null,
-        nextLink: null
-      }
+      addToCartButton: [],
+      // pagination: {
+      page: 1,
+      totalPage: 3,
+      limit: 6,
+      totalData: 17,
+      // },
+      perPage: 0,
+      currentPage: 1
     }
   },
   created() {
     this.getProduct()
   },
+  computed: {
+    rows() {
+      return this.totalData
+    }
+  },
   methods: {
-    linkGen(pageNum) {
-      console.log(this.pagination)
-      return pageNum === 1 ? '?' : `?page=${pageNum}`
+    handlePageChange(numberPage) {
+      this.$router.push(`?page=${numberPage}`)
+      this.page = numberPage
+      this.getProduct()
+    },
+    incrementCart(data) {
+      // console.log(data) // item yang di klik
+      // console.log(this.cart) // array
+      const incrementData = this.cart.find(
+        (value) => value.product_id === data.product_id
+      )
+      incrementData.quantity += 1
+      // incrementData.totalPrice = incrementData.price * ....
+      console.log(this.cart)
+    },
+    decrementCart(data) {
+      // console.log(data) // item yang di klik
+      // console.log(this.cart) // array
+      const decrementData = this.cart.find(
+        (value) => value.product_id === data.product_id
+      )
+      decrementData.quantity -= 1
+      if (decrementData.quantity <= 0) {
+        this.removeFromCart(data)
+      }
+      // incrementData.totalPrice = incrementData.price * ....
+      console.log(this.cart)
+    },
+    checkCart(data) {
+      return this.cart.some((item) => item.product_id === data.product_id)
     },
     incrementCount(data) {
       this.count += data
@@ -251,24 +286,52 @@ export default {
         this.count -= data
       }
     },
-    addToCart(data) {
-      const setCart = {
-        product_id: data.product_id,
-        quantity: 1
+    isInCart(data) {
+      const itemInCart = this.cart.find(
+        (value) => value.product_id === data.product_id
+      )
+      if (itemInCart) {
+        return true
+      } else {
+        return false
       }
-      this.cart = [...this.cart, setCart]
-      console.log(this.cart)
+    },
+    addToCart(data) {
+      const isInCart = this.isInCart(data)
+      if (!isInCart) {
+        const setCart = {
+          product_id: data.product_id,
+          product: data,
+          quantity: 1
+        }
+        this.cart = [...this.cart, setCart]
+        console.log(this.cart)
+      }
+    },
+    removeFromCart(data) {
+      const isInCart = this.isInCart(data)
+      if (isInCart) {
+        const itemInCart = this.cart.find(
+          (value) => value.product_id === data.product_id
+        )
+        const index = this.cart.indexOf(itemInCart)
+        if (index > -1) {
+          this.cart.splice(index, 1)
+        }
+        console.log(this.cart)
+      }
     },
     getProduct() {
       axios
         .get(
-          `http://127.0.0.1:3001/product?page=${this.pagination.page}&limit=${this.pagination.limit}&order=${this.order}&order_type=${this.order_type}`,
-          null,
-          {}
+          `http://127.0.0.1:3001/product?page=${this.page}&limit=${this.limit}&order=${this.order}&order_type=${this.order_type}`
         )
         .then((response) => {
           this.products = response.data.data
-          this.pagination = response.data.pagination
+          this.perPage = response.data.pagination.limit
+          for (let i = 0; i < this.products.length; i++) {
+            this.addToCartButton = [...this.addToCartButton, true]
+          }
         })
         .catch((error) => {
           console.log(error)

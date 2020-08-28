@@ -21,7 +21,7 @@ export default {
 
 <style scoped>
 .c-container {
-  height: 200px;
+  height: 300px;
   width: 150px;
   border-radius: 5px;
   border: 1px solid black;

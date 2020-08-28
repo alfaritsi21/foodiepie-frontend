@@ -1,6 +1,72 @@
 <template>
   <b-container fluid>
     <b-row>
+      <b-col cols="12" sm="12" md="8" lg="8" xl="8" class="default-container mar-top-3">
+        <b-row>
+          <b-col
+            cols="2"
+            sm="2"
+            md="1"
+            lg="1"
+            xl="1"
+            class="default-container align-center pad-top-10 pad-left-10 menu-patty"
+          >
+            <img src="../assets/menu-patty1.png" alt />
+          </b-col>
+          <b-col
+            cols="5"
+            sm="5"
+            md="9"
+            lg="10"
+            xl="10"
+            class="default-container align-center pad-top-10 box-shadow"
+          >
+            <h2>Foodiepie</h2>
+          </b-col>
+          <b-col
+            cols="2"
+            sm="2"
+            md="2"
+            lg="1"
+            xl="1"
+            class="default-container align-center pad-top-10 box-shadow"
+          >
+            <img src="../assets/magnifying-glass.png" alt />
+          </b-col>
+          <b-col
+            cols="3"
+            sm="3"
+            md="1"
+            lg="1"
+            xl="1"
+            class="default-container side-cart align-center pad-top-2 pad-side-20 box-shadow"
+          >
+            <div>
+              <b-button class="cart-button" v-b-toggle.sidebar-right variant="primary">
+                <b-icon icon="cart4"></b-icon>
+              </b-button>
+            </div>
+          </b-col>
+        </b-row>
+      </b-col>
+      <b-col
+        cols="12"
+        sm="12"
+        md="4"
+        lg="4"
+        xl="4"
+        class="default-container small-container box-shadow mar-top-3"
+      >
+        <div class="text-center mar-top-10">
+          <b-button variant="primary">
+            Cart
+            <b-badge variant="light">{{cart.length}}</b-badge>
+          </b-button>
+        </div>
+      </b-col>
+    </b-row>
+    <!-- ========================================================== -->
+    <b-row>
       <b-col cols="12" sm="12" md="8" lg="8" xl="8">
         <b-row>
           <b-col
@@ -16,7 +82,9 @@
                 <img src="../assets/fork.png" alt />
               </b-col>
               <b-col class="pad-upside">
-                <img src="../assets/clipboard.png" alt />
+                <a href="history">
+                  <img src="../assets/clipboard.png" alt />
+                </a>
               </b-col>
               <b-col class="pad-upside">
                 <a href="#">
@@ -41,7 +109,7 @@
                     <div>
                       <mdb-form-inline>
                         <mdbIcon icon="search" />
-                        <p>Search :</p>
+                        <!-- <p>Search :</p> -->
                         <input
                           v-model="form.product_name"
                           v-on:keyup.enter="searchProduct()"
@@ -54,7 +122,7 @@
                     </div>
                   </b-col>
                   <b-col cols="4" md="3">
-                    <p>Sort by :</p>
+                    <!-- <p>Sort by :</p> -->
                     <b-form-select
                       v-model="order"
                       :options="optionsOrder"
@@ -72,7 +140,7 @@
                     </b-dropdown>-->
                   </b-col>
                   <b-col cols="4" md="3">
-                    <p>Order by :</p>
+                    <!-- <p>Order by :</p> -->
                     <b-form-select
                       v-model="order_type"
                       :options="optionsType"
@@ -86,7 +154,7 @@
                   </b-col>
                 </b-row>
               </b-container>
-              <b-row class="pad-top-10">
+              <b-row class="pad-top-10 main-list">
                 <b-col
                   cols="12"
                   sm="6"
@@ -156,32 +224,35 @@
                 </b-col>
               </b-row>
             </b-container>
-            <div class="overflow-auto">
-              <b-pagination
-                v-model="currentPage"
-                :total-rows="rows"
-                :per-page="perPage"
-                @change="handlePageChange"
-                aria-controls="my-table"
-              ></b-pagination>
-            </div>
+            <b-container class="bv-example-row pad-left-10">
+              <!-- <b-container class="bv-example-row container-sort"> -->
+              <b-row>
+                <b-col cols="4" md="6">
+                  <div>
+                    <div class="overflow-auto">
+                      <b-pagination
+                        v-model="currentPage"
+                        :total-rows="rows"
+                        :per-page="perPage"
+                        @change="handlePageChange"
+                        aria-controls="my-table"
+                      ></b-pagination>
+                    </div>
+                  </div>
+                </b-col>
+              </b-row>
+              <!-- </b-container> -->
+            </b-container>
           </b-col>
         </b-row>
       </b-col>
       <b-col md="4" lg="4" xl="4" class="cart-content default-container small-container">
-        <div v-if="isShowEmpty === true" class="empty-cart">
-          <img src="../assets/food-and-restaurant.png" alt />
-          <h4>Your cart is empty</h4>
-          <h5>Please add some items from the menu</h5>
-        </div>
         <div class="mar-top-20">
           <Cart
-            name="Kopi"
-            price="2000"
-            :count="count"
             :cart="cart"
             @increment="incrementCart"
             @decrement="decrementCart"
+            @clearCart="clearCart"
           />
         </div>
       </b-col>
@@ -209,6 +280,7 @@ export default {
     return {
       count: 0,
       optionsOrder: [
+        { value: 'product_id', text: 'Sort By' },
         { value: 'product_id', text: 'Product ID' },
         { value: 'product_name', text: 'Product Name' },
         { value: 'product_price', text: 'Product Price' },
@@ -216,6 +288,7 @@ export default {
         { value: 'product_created_at', text: 'Product Created' }
       ],
       optionsType: [
+        { value: 'ASC', text: 'Order Type' },
         { value: 'ASC', text: 'Ascending' },
         { value: 'DESC', text: 'Descending' }
       ],
@@ -273,7 +346,7 @@ export default {
         this.removeFromCart(data)
       }
       // incrementData.totalPrice = incrementData.price * ....
-      console.log(this.cart)
+      // console.log(this.cart)
     },
     checkCart(data) {
       return this.cart.some((item) => item.product_id === data.product_id)
@@ -305,7 +378,7 @@ export default {
           quantity: 1
         }
         this.cart = [...this.cart, setCart]
-        console.log(this.cart)
+        // console.log(this.cart)
       }
     },
     removeFromCart(data) {
@@ -318,8 +391,11 @@ export default {
         if (index > -1) {
           this.cart.splice(index, 1)
         }
-        console.log(this.cart)
+        // console.log(this.cart)
       }
+    },
+    clearCart() {
+      this.cart = []
     },
     getProduct() {
       axios
@@ -369,10 +445,6 @@ export default {
   box-shadow: 15px 0 15px -15px rgba(0, 0, 0, 0.25);
 }
 
-.empty-cart {
-  text-align: center;
-}
-
 .empty-cart h5 {
   color: #cecece;
 }
@@ -383,5 +455,88 @@ export default {
 
 .container-sort {
   background-color: none;
+}
+
+/* =================================== */
+.align-center {
+  text-align: center;
+}
+
+.pad-10 {
+  padding: 10px;
+}
+
+.pad-5 {
+  padding: 5px;
+}
+
+.pad-top-2 {
+  padding-top: 2px;
+}
+
+.pad-top-10 {
+  padding-top: 10px;
+}
+
+.pad-top-20 {
+  padding-top: 10px;
+}
+
+.pad-side-20 {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.pad-left-10 {
+  padding-left: 20px;
+}
+
+.pad-right-20 {
+  padding-right: 20px;
+}
+
+.mar-10 {
+  margin: 10px;
+}
+
+.mar-top-3 {
+  margin-top: 3px;
+}
+
+.mar-top-10 {
+  margin-top: 10px;
+}
+
+.mar-top-20 {
+  margin-top: 20px;
+}
+
+.box-shadow {
+  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.25);
+}
+
+.menu-patty img {
+  box-shadow: none;
+}
+
+.main-list {
+  max-height: 500px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+@media (max-width: 670px) {
+}
+
+@media (max-width: 768px) {
+  .small-container {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .side-cart {
+    display: none;
+  }
 }
 </style>

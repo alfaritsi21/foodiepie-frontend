@@ -11,14 +11,7 @@
       >
         <img src="../assets/menu-patty1.png" alt />
       </b-col>
-      <b-col
-        cols="10"
-        sm="10"
-        md="11"
-        lg="11"
-        xl="11"
-        class="text-center pt-1 box-shadow"
-      >
+      <b-col cols="10" sm="10" md="11" lg="11" xl="11" class="text-center pt-1 box-shadow">
         <h2>History</h2>
       </b-col>
     </b-row>
@@ -60,7 +53,7 @@
                 <h5>{{ formatCurrency(todayIncome) }}</h5>
                 <p>
                   {{ incomeIncrease }} Yesterday ({{
-                    formatCurrency(yesterdayIncome)
+                  formatCurrency(yesterdayIncome)
                   }})
                 </p>
               </div>
@@ -82,8 +75,12 @@
             <div class="card3">
               <div class="center-text">
                 <p>This Year's Income</p>
-                <h5>Rp. 000000000</h5>
-                <p>+2% Last Year</p>
+                <h5>{{ formatCurrency(yearlyIncome) }}</h5>
+                <p>
+                  {{ lastYearIncrease }} Last Year ({{
+                  formatCurrency(lastYearIncome)
+                  }})
+                </p>
               </div>
             </div>
           </b-col>
@@ -96,14 +93,9 @@
               <b-col cols="3">
                 <h3>Revenue</h3>
               </b-col>
-              <b-col cols="2"
-                ><b-form-select
-                  v-model="order"
-                  :options="optionsOrder"
-                  @change="getProduct()"
-                  class="mb-3"
-                ></b-form-select
-              ></b-col>
+              <b-col cols="3">
+                <b-form-select v-model="chartFilter" :options="optionsChart" class="mb-3"></b-form-select>
+              </b-col>
             </b-row>
             <line-chart :data="chartData"></line-chart>
           </div>
@@ -117,22 +109,11 @@
               <b-col cols="3">
                 <h3>Recent Order</h3>
               </b-col>
-              <b-col cols="2"
-                ><b-form-select
-                  v-model="filter"
-                  :options="optionsFilter"
-                  @change="getProduct()"
-                  class="mb-3"
-                ></b-form-select
-              ></b-col>
+              <b-col cols="3">
+                <b-form-select v-model="filter" :options="optionsFilter" class="mb-3"></b-form-select>
+              </b-col>
             </b-row>
-            <b-table
-              class="history-table"
-              striped
-              hover
-              :items="items"
-              :fields="fields"
-            ></b-table>
+            <b-table class="table-responsive" striped hover :items="items" :fields="fields"></b-table>
           </div>
         </div>
         <!-- =======Table============= -->
@@ -153,9 +134,14 @@ export default {
       fields: ['invoice', 'cashier', 'date', 'orders', 'amount'],
       items: [],
       chartData: {},
+      chartFilter: 'month',
+      optionsChart: [
+        { value: 'month', text: 'This Month' },
+        { value: 'year', text: 'This Year' }
+      ],
       filter: 'today',
       optionsFilter: [
-        { value: 'today', text: 'Today' },
+        { value: 'today', text: 'All' },
         { value: 'week', text: 'This Week' }
       ],
       todayIncome: 0,
@@ -163,7 +149,10 @@ export default {
       incomeIncrease: '',
       countOrder: 0,
       lastWeekCountOrder: 0,
-      orderIncrease: ''
+      orderIncrease: '',
+      yearlyIncome: 0,
+      lastYearIncome: 0,
+      lastYearIncrease: 0
     }
   },
   components: {
@@ -177,15 +166,17 @@ export default {
     this.getCountOrder()
     this.getLastWeekCountOrder()
     this.getMonthlyIncomeData()
+    this.getYearIncome()
+    this.getLastYearIncome()
   },
   methods: {
     getHistory() {
       axios
         .get('http://127.0.0.1:3001/history/')
-        .then(response => {
-          response.data.data.forEach(item => {
+        .then((response) => {
+          response.data.data.forEach((item) => {
             let orders = ''
-            item.orders.forEach(element => {
+            item.orders.forEach((element) => {
               orders += `${element.product_name} x${element.quantity}, `
             })
             const data = {
@@ -198,7 +189,7 @@ export default {
             this.items = [...this.items, data]
           })
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -207,10 +198,10 @@ export default {
       // console.log(date)
       axios
         .post('http://127.0.0.1:3001/history/income/today', { date }, {})
-        .then(response => {
+        .then((response) => {
           this.todayIncome = response.data.data[0].daily_income
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -222,7 +213,7 @@ export default {
       // console.log(date)
       axios
         .post('http://127.0.0.1:3001/history/income/today', { date }, {})
-        .then(response => {
+        .then((response) => {
           this.yesterdayIncome = response.data.data[0].daily_income
           if (this.yesterdayIncome) {
             const increase =
@@ -234,9 +225,12 @@ export default {
             } else {
               this.incomeIncrease = `-${increase.toFixed(3)}%`
             }
+          } else {
+            this.yesterdayIncome = 0
+            this.incomeIncrease = ''
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -251,10 +245,10 @@ export default {
       console.log(date)
       axios
         .post('http://127.0.0.1:3001/history/count/order', { date }, {})
-        .then(response => {
+        .then((response) => {
           this.countOrder = response.data.data[0].count_order
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -265,7 +259,7 @@ export default {
       console.log(date)
       axios
         .post('http://127.0.0.1:3001/history/count/order', { date }, {})
-        .then(response => {
+        .then((response) => {
           this.lastWeekCountOrder = response.data.data[0].count_order
           if (this.lastWeekCountOrder) {
             const increase =
@@ -277,9 +271,12 @@ export default {
             } else {
               this.orderIncrease = `-${increase.toFixed(3)}%`
             }
+          } else {
+            this.lastWeekCountOrder = 0
+            this.orderIncrease = ''
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -288,11 +285,11 @@ export default {
       // console.log(date)
       axios
         .post('http://127.0.0.1:3001/history/income/month', { date }, {})
-        .then(response => {
+        .then((response) => {
           const monthlyIncomeData = response.data.data
 
           const jsonData = {}
-          monthlyIncomeData.forEach(item => {
+          monthlyIncomeData.forEach((item) => {
             var columnName = item.date
             if (item.income.length) {
               jsonData[columnName] = item.income[0].daily_income
@@ -303,7 +300,48 @@ export default {
 
           this.chartData = jsonData
         })
-        .catch(error => {
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    getYearIncome() {
+      const date = new Date().toISOString().slice(0, 10)
+      // console.log(date)
+      axios
+        .post('http://127.0.0.1:3001/history/income/year', { date }, {})
+        .then((response) => {
+          this.yearlyIncome = response.data.data[0].yearly_income
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    getLastYearIncome() {
+      const d = new Date()
+      d.setDate(d.getDate() - 365)
+      const date = d.toISOString().slice(0, 10)
+
+      // console.log(date)
+      axios
+        .post('http://127.0.0.1:3001/history/income/year', { date }, {})
+        .then((response) => {
+          this.lastYearIncome = response.data.data[0].yearly_income
+          if (this.lastYearIncome) {
+            const increase =
+              ((this.yearlyIncome - this.lastYearIncome) /
+                this.lastYearIncome) *
+              100
+            if (increase >= 0) {
+              this.lastYearIncrease = `+${increase.toFixed(3)}%`
+            } else {
+              this.lastYearIncrease = `-${increase.toFixed(3)}%`
+            }
+          } else {
+            this.lastYearIncome = 0
+            this.lastYearIncrease = ''
+          }
+        })
+        .catch((error) => {
           console.log(error)
         })
     }
@@ -475,6 +513,11 @@ export default {
   padding: 20px;
 }
 
+.history-table {
+  max-width: 1200px;
+  overflow-x: scroll;
+}
+
 @media (max-width: 670px) {
 }
 
@@ -488,10 +531,5 @@ export default {
   .side-cart {
     display: none;
   }
-
-  /* .history-table {
-    overflow-x: scroll;
-    overflow-y: hidden;
-  } */
 }
 </style>

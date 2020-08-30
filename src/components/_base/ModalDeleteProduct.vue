@@ -1,29 +1,18 @@
 <template>
   <div>
-    <a
-      id="show-btn"
-      @click="
+    <a id="show-btn" @click="
         showModal()
         getProduct()
-      "
-    >
+      ">
       <b-icon-trash></b-icon-trash>
     </a>
 
     <b-modal ref="my-modal" hide-footer title="Confirmation Delete Product">
-      <div class="d-block text-center">
-        Are you sure you want to delete this product ?
-      </div>
+      <div class="d-block text-center">Are you sure you want to delete this product ?</div>
       <b-row>
         <b-col cols="3" md="3"></b-col>
         <b-col cols="3" md="3">
-          <b-button
-            class="mt-4"
-            variant="warning"
-            @click="toggleModal"
-            style="color: white;"
-            >Cancel</b-button
-          >
+          <b-button class="mt-4" variant="warning" @click="toggleModal" style="color: white;">Cancel</b-button>
         </b-col>
         <b-col cols="3" md="3">
           <b-button
@@ -33,8 +22,7 @@
               hideModal()
               deleteProduct()
             "
-            >Confirm</b-button
-          >
+          >Confirm</b-button>
         </b-col>
       </b-row>
     </b-modal>
@@ -110,7 +98,7 @@ export default {
           this.form,
           {}
         )
-        .then(response => {
+        .then((response) => {
           const savedProduct = response.data.data
           this.makeToast(
             'success',
@@ -118,7 +106,7 @@ export default {
           )
           this.getProduct()
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
           this.makeToast(
             'danger',
@@ -127,14 +115,7 @@ export default {
         })
     },
     getProduct() {
-      axios
-        .get('http://127.0.0.1:3001/product/')
-        .then(response => {
-          this.products = response.data.data.product_id
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      this.$emit('getProduct')
     }
   }
 }

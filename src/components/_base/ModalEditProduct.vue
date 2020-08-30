@@ -1,12 +1,9 @@
 <template>
   <div>
-    <a
-      id="show-btn"
-      @click="
+    <a id="show-btn" @click="
         showModal()
         getProduct()
-      "
-    >
+      ">
       <b-icon-pencil-square></b-icon-pencil-square>
     </a>
 
@@ -15,26 +12,15 @@
         <b-form @submit="onSubmit" @reset="onReset" v-if="show">
           <b-row>
             <b-col cols="2" class="form-name">
-              <b-form-group
-                id="input-group-1"
-                label="Name:"
-                label-for="input-1"
-              ></b-form-group>
+              <b-form-group id="input-group-1" label="Name:" label-for="input-1"></b-form-group>
             </b-col>
             <b-col cols="10">
-              <b-form-input
-                v-model="form.product_name"
-                placeholder="Enter product name"
-              ></b-form-input>
+              <b-form-input v-model="form.product_name" placeholder="Enter product name"></b-form-input>
             </b-col>
           </b-row>
           <b-row>
             <b-col cols="2" class="form-name">
-              <b-form-group
-                id="input-group-3"
-                label="Price :"
-                label-for="input-3"
-              ></b-form-group>
+              <b-form-group id="input-group-3" label="Price :" label-for="input-3"></b-form-group>
             </b-col>
             <b-col cols="10">
               <b-form-input
@@ -46,24 +32,14 @@
           </b-row>
           <b-row>
             <b-col cols="2" class="form-name">
-              <b-form-group
-                id="input-group-4"
-                label="Category:"
-                label-for="input-4"
-              ></b-form-group>
+              <b-form-group id="input-group-4" label="Category:" label-for="input-4"></b-form-group>
             </b-col>
             <b-col cols="10">
               <div>
-                <b-form-select
-                  v-model="form.category_id"
-                  :options="options"
-                  class="mb-3"
-                >
+                <b-form-select v-model="form.category_id" :options="options" class="mb-3">
                   <!-- This slot appears above the options from 'options' prop -->
                   <template v-slot:first>
-                    <b-form-select-option :value="0" disabled
-                      >-- Please select an option --</b-form-select-option
-                    >
+                    <b-form-select-option :value="0" disabled>-- Please select an option --</b-form-select-option>
                   </template>
                 </b-form-select>
               </div>
@@ -79,16 +55,14 @@
           hideModal()
           patchProduct()
         "
-        >Confirm</b-button
-      >
+      >Confirm</b-button>
       <b-button
         class="mt-2"
         variant="danger"
         block
         @click="toggleModal"
         style="color: white;"
-        >Cancel</b-button
-      >
+      >Cancel</b-button>
     </b-modal>
   </div>
 </template>
@@ -159,7 +133,7 @@ export default {
     getCategory() {
       axios
         .get('http://127.0.0.1:3001/category')
-        .then(response => {
+        .then((response) => {
           const categories = response.data.data
           console.log(categories)
           for (let index = 0; index < categories.length; index++) {
@@ -172,7 +146,7 @@ export default {
             ]
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -183,7 +157,7 @@ export default {
           this.form,
           {}
         )
-        .then(response => {
+        .then((response) => {
           const savedProduct = response.data.data
           this.makeToast(
             'success',
@@ -191,7 +165,7 @@ export default {
           )
           this.getProduct()
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
           this.makeToast(
             'danger',
@@ -200,14 +174,7 @@ export default {
         })
     },
     getProduct() {
-      axios
-        .get('http://127.0.0.1:3001/product/')
-        .then(response => {
-          this.products = response.data.data.product_id
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      this.$emit('getProduct')
     }
   }
 }

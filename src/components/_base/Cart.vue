@@ -24,7 +24,7 @@
                 <b-col md="9">
                   <b-container class="bv-example-row">
                     <b-row>
-                      <b-col class="mar-top-10">
+                      <b-col cols="12" class="mar-top-10">
                         <h5>{{ item.product.product_name }}</h5>
                       </b-col>
                       <b-col></b-col>
@@ -67,10 +67,10 @@
     <div v-if="cart.length > 0" class="mt-4">
       <b-row align-h="between">
         <b-col cols="3">
-          <h5>Total :</h5>
+          <h5>Total:</h5>
         </b-col>
-        <b-col cols="4">
-          <h5>Rp. {{calculateTotalOrder()}}*</h5>
+        <b-col cols="6">
+          <h5>{{ formatCurrency(calculateTotalOrder())}}*</h5>
         </b-col>
       </b-row>
       <b-row>
@@ -105,7 +105,7 @@
                 <h6>{{ item.product.product_name }} x{{ item.quantity }}</h6>
               </b-col>
               <b-col cols="6" class="text-right">
-                <h6>Rp. {{ item.product.product_price }}</h6>
+                <h6>{{ formatCurrency(item.product.product_price) }}</h6>
               </b-col>
             </b-row>
             <b-row align-h="between" class="mt-1">
@@ -113,7 +113,7 @@
                 <h6>PPn 10%</h6>
               </b-col>
               <b-col cols="6" class="text-right">
-                <h6>Rp. {{ calculateTotalOrder() * 0.1 }}</h6>
+                <h6>{{ formatCurrency(calculateTotalOrder() * 0.1) }}</h6>
               </b-col>
             </b-row>
             <b-row align-h="between" class="mt-4">
@@ -121,7 +121,7 @@
                 <h6>Total</h6>
               </b-col>
               <b-col cols="4" class="text-right">
-                <h6>Rp. {{ calculateTotalOrder() + calculateTotalOrder() * 0.1 }}</h6>
+                <h6>{{ formatCurrency(calculateTotalOrder() + calculateTotalOrder() * 0.1) }}</h6>
               </b-col>
             </b-row>
             <b-row align-h="between" class="mt-3">
@@ -165,6 +165,12 @@ export default {
     this.getHistory()
   },
   methods: {
+    formatCurrency(number) {
+      return number.toLocaleString('ID-JK', {
+        style: 'currency',
+        currency: 'IDR'
+      })
+    },
     increment(data) {
       console.log('Clicked')
       this.$emit('increment', data)

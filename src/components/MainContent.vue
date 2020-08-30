@@ -73,14 +73,14 @@
           >
             <b-row cols="1">
               <b-col class="pad-upside">
-                <a href="/" v-b-tooltip.hover title="Order">
+                <router-link to="/" v-b-tooltip.hover title="History">
                   <img src="../assets/fork.png" alt />
-                </a>
+                </router-link>
               </b-col>
               <b-col class="pad-upside">
-                <a href="history" v-b-tooltip.hover title="History">
+                <router-link to="/history" v-b-tooltip.hover title="History">
                   <img src="../assets/clipboard.png" alt />
-                </a>
+                </router-link>
               </b-col>
               <b-col class="pad-upside">
                 <a href="#" v-b-tooltip.hover title="Create Product">

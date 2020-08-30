@@ -1,5 +1,5 @@
 <template>
-  <div class="history">
+  <div class="about">
     <MainHistory />
   </div>
 </template>
@@ -10,7 +10,7 @@
 import MainHistory from '@/components/MainHistory.vue'
 
 export default {
-  name: 'History',
+  name: 'About',
   components: {
     MainHistory
   }

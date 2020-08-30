@@ -9,15 +9,26 @@
         <b-form @submit="onSubmit" @reset="onReset" v-if="show">
           <b-row>
             <b-col cols="2" class="form-name">
-              <b-form-group id="input-group-1" label="Name :" label-for="input-1"></b-form-group>
+              <b-form-group
+                id="input-group-1"
+                label="Name :"
+                label-for="input-1"
+              ></b-form-group>
             </b-col>
             <b-col cols="10">
-              <b-form-input v-model="form.product_name" placeholder="Enter product name"></b-form-input>
+              <b-form-input
+                v-model="form.product_name"
+                placeholder="Enter product name"
+              ></b-form-input>
             </b-col>
           </b-row>
           <b-row>
             <b-col cols="2" class="form-name">
-              <b-form-group id="input-group-2" label="Image :" label-for="input-2"></b-form-group>
+              <b-form-group
+                id="input-group-2"
+                label="Image :"
+                label-for="input-2"
+              ></b-form-group>
             </b-col>
             <b-col cols="10">
               <b-form-file v-model="file2" plain></b-form-file>
@@ -25,7 +36,11 @@
           </b-row>
           <b-row>
             <b-col cols="2" class="form-name">
-              <b-form-group id="input-group-3" label="Price :" label-for="input-3"></b-form-group>
+              <b-form-group
+                id="input-group-3"
+                label="Price :"
+                label-for="input-3"
+              ></b-form-group>
             </b-col>
             <b-col cols="10">
               <b-form-input
@@ -37,13 +52,23 @@
           </b-row>
           <b-row>
             <b-col cols="2" class="form-name">
-              <b-form-group id="input-group-4" label="Category:" label-for="input-4"></b-form-group>
+              <b-form-group
+                id="input-group-4"
+                label="Category:"
+                label-for="input-4"
+              ></b-form-group>
             </b-col>
             <b-col cols="10">
               <div>
-                <b-form-select v-model="form.category_id" :options="options" class="mb-3">
+                <b-form-select
+                  v-model="form.category_id"
+                  :options="options"
+                  class="mb-3"
+                >
                   <template v-slot:first>
-                    <b-form-select-option :value="0" disabled>-- Please select an option --</b-form-select-option>
+                    <b-form-select-option :value="0" disabled
+                      >-- Please select an option --</b-form-select-option
+                    >
                   </template>
                 </b-form-select>
               </div>
@@ -51,14 +76,24 @@
           </b-row>
         </b-form>
       </div>
-      <b-button class="mt-3" variant="primary" block @click="hideModal(); postProduct()">Add</b-button>
+      <b-button
+        class="mt-3"
+        variant="primary"
+        block
+        @click="
+          hideModal()
+          postProduct()
+        "
+        >Add</b-button
+      >
       <b-button
         class="mt-2"
         variant="danger"
         block
         @click="toggleModal"
         style="color: white;"
-      >Cancel</b-button>
+        >Cancel</b-button
+      >
     </b-modal>
   </div>
 </template>
@@ -126,7 +161,7 @@ export default {
     getCategory() {
       axios
         .get('http://127.0.0.1:3001/category')
-        .then((response) => {
+        .then(response => {
           const categories = response.data.data
           console.log(categories)
           for (let index = 0; index < categories.length; index++) {
@@ -139,27 +174,32 @@ export default {
             ]
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
     postProduct() {
       axios
         .post('http://127.0.0.1:3001/product', this.form, {})
-        .then((response) => {
+        .then(response => {
           const savedProduct = response.data.data
           this.makeToast(
             'success',
             `Product ${savedProduct.product_name} succesfully created`
           )
+          this.getProduct()
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
           this.makeToast(
             'danger',
             `Product ${this.form.product_name} failed to create`
           )
         })
+    },
+
+    getProduct() {
+      this.$emit('getProduct')
     }
   }
 }

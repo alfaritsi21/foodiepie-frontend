@@ -1,7 +1,14 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="12" sm="12" md="8" lg="8" xl="8" class="default-container mar-top-3">
+      <b-col
+        cols="12"
+        sm="12"
+        md="8"
+        lg="8"
+        xl="8"
+        class="default-container mar-top-3"
+      >
         <b-row>
           <b-col
             cols="2"
@@ -31,7 +38,7 @@
             xl="1"
             class="default-container align-center pad-top-10 box-shadow"
           >
-            <img src="../assets/magnifying-glass.png" alt />
+            <!-- <img src="../assets/magnifying-glass.png" alt /> -->
           </b-col>
           <b-col
             cols="3"
@@ -42,7 +49,11 @@
             class="default-container side-cart align-center pad-top-2 pad-side-20 box-shadow"
           >
             <div>
-              <b-button class="cart-button" v-b-toggle.sidebar-right variant="primary">
+              <b-button
+                class="cart-button"
+                v-b-toggle.sidebar-right
+                variant="primary"
+              >
                 <b-icon icon="cart4"></b-icon>
               </b-button>
             </div>
@@ -60,7 +71,7 @@
         <div class="text-center mar-top-10">
           <b-button variant="primary">
             Cart
-            <b-badge variant="light">{{cart.length}}</b-badge>
+            <b-badge variant="light">{{ cart.length }}</b-badge>
           </b-button>
         </div>
       </b-col>
@@ -79,7 +90,9 @@
           >
             <b-row cols="1">
               <b-col class="pad-upside">
-                <img src="../assets/fork.png" alt />
+                <a href="/">
+                  <img src="../assets/fork.png" alt />
+                </a>
               </b-col>
               <b-col class="pad-upside">
                 <a href="history">
@@ -88,7 +101,7 @@
               </b-col>
               <b-col class="pad-upside">
                 <a href="#">
-                  <ModalMenu />
+                  <ModalMenu @getProduct="getProduct" />
                   <!-- <img src="../assets/add.png" alt /> -->
                 </a>
               </b-col>
@@ -105,23 +118,35 @@
             <b-container class="bv-example-row mar-10">
               <b-container class="bv-example-row container-sort">
                 <b-row>
-                  <b-col cols="4" md="6">
-                    <div>
-                      <mdb-form-inline>
-                        <mdbIcon icon="search" />
-                        <!-- <p>Search :</p> -->
-                        <input
-                          v-model="form.product_name"
-                          v-on:keyup.enter="searchProduct()"
-                          class="form-control mr-sm-2"
-                          type="text"
-                          placeholder="Search Product"
-                          aria-label="Search"
-                        />
-                      </mdb-form-inline>
-                    </div>
+                  <!-- <b-col cols="1" md="1">
+                    <b-button variant="outline-success" @click="searchProduct()"
+                      ><b-icon-search></b-icon-search
+                    ></b-button>
+                  </b-col> -->
+                  <b-col cols="5" md="5">
+                    <b-row>
+                      <b-col cols="1" sm="1" md="1" lg="1" xl="1"
+                        ><b-button
+                          variant="outline-success"
+                          @click="searchProduct()"
+                          ><b-icon-search></b-icon-search></b-button
+                      ></b-col>
+                      <b-col cols="9" sm="9" md="10" lg="10" xl="10"
+                        ><mdb-form-inline>
+                          <mdbIcon icon="search" />
+                          <input
+                            v-model="form.product_name"
+                            v-on:keyup.enter="searchProduct()"
+                            class="form-control mr-sm-2"
+                            type="text"
+                            placeholder="Search Product"
+                            aria-label="Search"
+                          /> </mdb-form-inline
+                      ></b-col>
+                    </b-row>
                   </b-col>
-                  <b-col cols="4" md="3">
+
+                  <b-col cols="3" md="3">
                     <!-- <p>Sort by :</p> -->
                     <b-form-select
                       v-model="order"
@@ -129,17 +154,8 @@
                       @change="getProduct()"
                       class="mb-3"
                     ></b-form-select>
-                    <!-- <b-dropdown
-                      variant="none"
-                      id="dropdown-1"
-                      text="Sort by"
-                      class="m-md-2 mb-2 pl-0 pr-0"
-                    >
-                      <b-dropdown-item>Product ID</b-dropdown-item>
-                      <b-dropdown-item>Category ID</b-dropdown-item>
-                    </b-dropdown>-->
                   </b-col>
-                  <b-col cols="4" md="3">
+                  <b-col cols="3" md="3">
                     <!-- <p>Order by :</p> -->
                     <b-form-select
                       v-model="order_type"
@@ -147,10 +163,6 @@
                       @change="getProduct()"
                       class="mb-3"
                     ></b-form-select>
-                    <!-- <b-dropdown variant="none" id="dropdown-2" text="Order by" class="m-md-2">
-                      <b-dropdown-item>First Action</b-dropdown-item>
-                      <b-dropdown-item>Second Action</b-dropdown-item>
-                    </b-dropdown>-->
                   </b-col>
                 </b-row>
               </b-container>
@@ -173,7 +185,9 @@
                     style="max-width: 20rem;"
                     class="mb-2"
                   >
-                    <b-card-text>Rp. {{item.product_price}}</b-card-text>
+                    <b-card-text>{{
+                      formatCurrency(item.product_price)
+                    }}</b-card-text>
 
                     <b-button
                       v-if="!isInCart(item)"
@@ -182,7 +196,8 @@
                       @click="addToCart(item)"
                       v-b-tooltip.hover
                       title="Add Order"
-                    >Add to Cart</b-button>
+                      >Add to Cart</b-button
+                    >
                     <b-button
                       v-else
                       block
@@ -190,7 +205,8 @@
                       @click="removeFromCart(item)"
                       v-b-tooltip.hover
                       title="Cancel Order"
-                    >Cancel</b-button>
+                      >Cancel</b-button
+                    >
 
                     <b-container fluid class="bv-example-row mt-1 pr-0 pl-0">
                       <b-row>
@@ -198,7 +214,6 @@
                           <b-button
                             block
                             variant="outline-success"
-                            @click="addToCart(item)"
                             v-b-tooltip.hover
                             title="Edit Product"
                             class="mt-2"
@@ -210,7 +225,6 @@
                           <b-button
                             block
                             variant="outline-danger"
-                            @click="addToCart(item)"
                             v-b-tooltip.hover
                             title="Delete Product"
                             class="mt-2"
@@ -246,7 +260,12 @@
           </b-col>
         </b-row>
       </b-col>
-      <b-col md="4" lg="4" xl="4" class="cart-content default-container small-container">
+      <b-col
+        md="4"
+        lg="4"
+        xl="4"
+        class="cart-content default-container small-container"
+      >
         <div class="mar-top-20">
           <Cart
             :cart="cart"
@@ -303,7 +322,7 @@ export default {
       addToCartButton: [],
       // pagination: {
       page: 1,
-      totalPage: 3,
+      totalPage: 0,
       limit: 6,
       totalData: 17,
       // },
@@ -329,7 +348,7 @@ export default {
       // console.log(data) // item yang di klik
       // console.log(this.cart) // array
       const incrementData = this.cart.find(
-        (value) => value.product_id === data.product_id
+        value => value.product_id === data.product_id
       )
       incrementData.quantity += 1
       // incrementData.totalPrice = incrementData.price * ....
@@ -339,7 +358,7 @@ export default {
       // console.log(data) // item yang di klik
       // console.log(this.cart) // array
       const decrementData = this.cart.find(
-        (value) => value.product_id === data.product_id
+        value => value.product_id === data.product_id
       )
       decrementData.quantity -= 1
       if (decrementData.quantity <= 0) {
@@ -349,7 +368,7 @@ export default {
       // console.log(this.cart)
     },
     checkCart(data) {
-      return this.cart.some((item) => item.product_id === data.product_id)
+      return this.cart.some(item => item.product_id === data.product_id)
     },
     incrementCount(data) {
       this.count += data
@@ -361,7 +380,7 @@ export default {
     },
     isInCart(data) {
       const itemInCart = this.cart.find(
-        (value) => value.product_id === data.product_id
+        value => value.product_id === data.product_id
       )
       if (itemInCart) {
         return true
@@ -385,7 +404,7 @@ export default {
       const isInCart = this.isInCart(data)
       if (isInCart) {
         const itemInCart = this.cart.find(
-          (value) => value.product_id === data.product_id
+          value => value.product_id === data.product_id
         )
         const index = this.cart.indexOf(itemInCart)
         if (index > -1) {
@@ -402,26 +421,34 @@ export default {
         .get(
           `http://127.0.0.1:3001/product?page=${this.page}&limit=${this.limit}&order=${this.order}&order_type=${this.order_type}`
         )
-        .then((response) => {
+        .then(response => {
           this.products = response.data.data
           this.perPage = response.data.pagination.limit
+          this.totalPage = response.data.pagination.totalPage
+          this.totalData = response.data.pagination.totalData
           for (let i = 0; i < this.products.length; i++) {
             this.addToCartButton = [...this.addToCartButton, true]
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
     searchProduct() {
       axios
         .post('http://127.0.0.1:3001/product/search/', this.form, {})
-        .then((response) => {
+        .then(response => {
           this.products = response.data.data
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
+    },
+    formatCurrency(number) {
+      return number.toLocaleString('ID-JK', {
+        style: 'currency',
+        currency: 'IDR'
+      })
     }
   }
 }

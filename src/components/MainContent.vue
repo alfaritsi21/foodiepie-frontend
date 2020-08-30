@@ -78,7 +78,7 @@
                 </a>
               </b-col>
               <b-col class="pad-upside">
-                <a href="about" v-b-tooltip.hover title="History">
+                <a href="history" v-b-tooltip.hover title="History">
                   <img src="../assets/clipboard.png" alt />
                 </a>
               </b-col>

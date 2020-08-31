@@ -134,7 +134,7 @@
             class="mt-3"
             variant="primary"
             block
-            @click="$bvModal.hide('bv-modal-example'); postHistory()"
+            @click="$bvModal.hide('bv-modal-example'); postHistory(); clearCart();"
           >
             <b>Print</b>
           </b-button>
@@ -236,6 +236,19 @@ export default {
           console.log(error)
           this.makeToast('danger', 'Order Failed')
         })
+    },
+    removeFromCart(data) {
+      const isInCart = this.isInCart(data)
+      if (isInCart) {
+        const itemInCart = this.cart.find(
+          (value) => value.product_id === data.product_id
+        )
+        const index = this.cart.indexOf(itemInCart)
+        if (index > -1) {
+          this.cart.splice(index, 1)
+        }
+        // console.log(this.cart)
+      }
     }
   }
 }

@@ -188,11 +188,72 @@
                   :key="index"
                 >
                   <b-card
+                    v-if="!isInCart(item)"
                     v-bind:title="item.product_name"
-                    img-src="https://picsum.photos/600/300/?image=25"
+                    img-src="https://picsum.photos/600/300/?image=20"
                     img-alt="Image"
                     img-top
                     tag="article"
+                    style="max-width: 20rem;"
+                    class="mb-2"
+                  >
+                    <b-card-text>
+                      {{
+                      formatCurrency(item.product_price)
+                      }}
+                    </b-card-text>
+
+                    <b-button
+                      v-if="!isInCart(item)"
+                      block
+                      variant="primary"
+                      @click="addToCart(item)"
+                      v-b-tooltip.hover
+                      title="Add Order"
+                    >Add to Cart</b-button>
+                    <b-button
+                      v-else
+                      block
+                      variant="danger"
+                      @click="removeFromCart(item)"
+                      v-b-tooltip.hover
+                      title="Cancel Order"
+                    >Cancel</b-button>
+
+                    <b-container fluid class="bv-example-row mt-1 pr-0 pl-0">
+                      <b-row>
+                        <b-col md="6">
+                          <b-button
+                            block
+                            variant="outline-success"
+                            v-b-tooltip.hover
+                            title="Edit Product"
+                            class="mt-2"
+                          >
+                            <ModalEditProduct :product="item" @getProduct="getProduct" />
+                          </b-button>
+                        </b-col>
+                        <b-col md="6">
+                          <b-button
+                            block
+                            variant="outline-danger"
+                            v-b-tooltip.hover
+                            title="Delete Product"
+                            class="mt-2"
+                          >
+                            <ModalDeleteProduct :product="item" @getProduct="getProduct" />
+                          </b-button>
+                        </b-col>
+                      </b-row>
+                    </b-container>
+                  </b-card>
+                  <b-card
+                    v-else
+                    v-bind:title="item.product_name"
+                    img-src="https://scontent.fbdo1-2.fna.fbcdn.net/v/t1.0-9/118653909_1431063837097187_8105755792088749157_n.jpg?_nc_cat=105&_nc_sid=730e14&_nc_eui2=AeHYiNCkN7dILMeEpJY2LpTALckXCwb2wjgtyRcLBvbCODMPFCINeUCVB0MTnPgC6Gk9c8kyl1klEWL2oL5Gi_sw&_nc_ohc=UF2CrlAq4TwAX9IUaJF&_nc_ht=scontent.fbdo1-2.fna&oh=f8e71f785f005fb68f90fbf18f8c0285&oe=5F71F657"
+                    img-alt="menu"
+                    img-top
+                    tag="image-menu"
                     style="max-width: 20rem;"
                     class="mb-2"
                   >

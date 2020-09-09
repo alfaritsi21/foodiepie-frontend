@@ -11,7 +11,8 @@
             xl="1"
             class="default-container align-center pad-top-10 pad-left-10 menu-patty"
           >
-            <img src="../assets/menu-patty1.png" alt />
+            <!-- <img src="../assets/menu-patty1.png" alt /> -->
+            <a class="logout" @click="handleLogout">Logout</a>
           </b-col>
           <b-col
             cols="5"
@@ -197,11 +198,7 @@
                     style="max-width: 20rem;"
                     class="mb-2"
                   >
-                    <b-card-text>
-                      {{
-                      formatCurrency(item.product_price)
-                      }}
-                    </b-card-text>
+                    <b-card-text>{{ formatCurrency(item.product_price) }}</b-card-text>
 
                     <b-button
                       v-if="!isInCart(item)"
@@ -257,11 +254,7 @@
                     style="max-width: 20rem;"
                     class="mb-2"
                   >
-                    <b-card-text>
-                      {{
-                      formatCurrency(item.product_price)
-                      }}
-                    </b-card-text>
+                    <b-card-text>{{ formatCurrency(item.product_price) }}</b-card-text>
 
                     <b-button
                       v-if="!isInCart(item)"
@@ -353,6 +346,7 @@ import Cart from './_base/Cart.vue'
 import ModalMenu from './_base/ModalMenu'
 import ModalEditProduct from './_base/ModalEditProduct'
 import ModalDeleteProduct from './_base/ModalDeleteProduct'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'MainContent',
@@ -382,18 +376,18 @@ export default {
         product_name: ''
       },
       cart: [],
-      order: 'product_id',
-      order_type: 'ASC',
-      products: [],
+      // order: 'product_id',
+      // order_type: 'ASC',
+      // products: [],
       isShowEmpty: false,
-      addToCartButton: [],
+      // addToCartButton: [],
       // pagination: {
-      page: 1,
-      totalPage: 0,
-      limit: 6,
-      totalData: 17,
+      //   page: 1,
+      //   totalPage: 0,
+      //   limit: 6,
+      //   totalData: 17
       // },
-      perPage: 0,
+      // perPage: 0,
       currentPage: 1
     }
   },
@@ -401,14 +395,31 @@ export default {
     this.getProduct()
   },
   computed: {
-    rows() {
-      return this.totalData
-    }
+    ...mapGetters({
+      pagination: {
+        page: 'getPage',
+        totalPage: 'getTotalPage',
+        limit: 'getLimit',
+        totalData: 'getTotalData'
+      },
+      perPage: 'getPerPage',
+      rows: 'getTotalData',
+      products: 'getProduct',
+      addToCartButton: 'getCartButton',
+      order: 'getOrder',
+      order_type: 'getOrderType'
+    })
+    // rows() {
+    //   return this.totalData
+    // }
   },
   methods: {
+    ...mapActions({ getProduct: 'getProducts' }),
+    ...mapMutations(['setPage']),
     handlePageChange(numberPage) {
       this.$router.push(`?page=${numberPage}`)
-      this.page = numberPage
+      // this.page = numberPage
+      this.setPage(numberPage)
       this.getProduct()
     },
     incrementCart(data) {
@@ -483,24 +494,24 @@ export default {
     clearCart() {
       this.cart = []
     },
-    getProduct() {
-      axios
-        .get(
-          `http://127.0.0.1:3001/product?page=${this.page}&limit=${this.limit}&order=${this.order}&order_type=${this.order_type}`
-        )
-        .then((response) => {
-          this.products = response.data.data
-          this.perPage = response.data.pagination.limit
-          this.totalPage = response.data.pagination.totalPage
-          this.totalData = response.data.pagination.totalData
-          for (let i = 0; i < this.products.length; i++) {
-            this.addToCartButton = [...this.addToCartButton, true]
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
+    // getProduct() {
+    //   axios
+    //     .get(
+    //       `http://127.0.0.1:3001/product?page=${this.page}&limit=${this.limit}&order=${this.order}&order_type=${this.order_type}`
+    //     )
+    //     .then(response => {
+    //       this.products = response.data.data
+    //       this.perPage = response.data.pagination.limit
+    //       this.totalPage = response.data.pagination.totalPage
+    //       this.totalData = response.data.pagination.totalData
+    //       for (let i = 0; i < this.products.length; i++) {
+    //         this.addToCartButton = [...this.addToCartButton, true]
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.log(error)
+    //     })
+    // },
     searchProduct() {
       axios
         .post('http://127.0.0.1:3001/product/search/', this.form, {})
@@ -516,7 +527,11 @@ export default {
         style: 'currency',
         currency: 'IDR'
       })
-    }
+    },
+    ...mapActions({ handleLogout: 'logout' })
+    // hndleLogout() {
+    //   console.log('logout clicked')
+    // }
   }
 }
 </script>
@@ -627,6 +642,10 @@ export default {
   height: 65px;
   z-index: 10;
   border-radius: 15px;
+}
+
+.logout {
+  cursor: pointer;
 }
 
 @media (max-width: 670px) {

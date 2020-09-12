@@ -20,7 +20,7 @@
             variant="danger"
             @click="
               hideModal()
-              deleteProduct()
+              delProduct()
             "
           >Confirm</b-button>
         </b-col>
@@ -30,7 +30,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import { mapActions } from 'vuex'
 
 export default {
   props: ['product'],
@@ -56,6 +57,8 @@ export default {
     this.getProduct()
   },
   methods: {
+    ...mapActions(['deleteProduct']),
+    ...mapActions(['getProducts']),
     showModal() {
       this.$refs['my-modal'].show()
     },
@@ -91,20 +94,23 @@ export default {
         solid: true
       })
     },
-    deleteProduct() {
-      axios
-        .delete(
-          `http://127.0.0.1:3001/product/${this.product.product_id}`,
-          this.form,
-          {}
-        )
+    delProduct() {
+      // const data = new FormData()
+      // data.append('product_id', this.form.product_id)
+      // data.append('product_name', this.form.product_name)
+      // data.append('category_id', this.form.category_id)
+      // data.append('product_price', this.form.product_price)
+      // data.append('product_status', this.form.product_status)
+      // data.append('product_image', this.form.product_image)
+
+      this.deleteProduct(this.product.product_id)
         .then((response) => {
-          const savedProduct = response.data.data
+          console.log(response)
+          this.getProducts()
           this.makeToast(
             'success',
-            `Product ${savedProduct.product_name} succesfully deleted`
+            `Product ${this.form.product_name} succesfully deleted`
           )
-          this.getProduct()
         })
         .catch((error) => {
           console.log(error)
@@ -114,6 +120,29 @@ export default {
           )
         })
     },
+    // deleteProduct() {
+    //   axios
+    //     .delete(
+    //       `http://127.0.0.1:3001/product/${this.product.product_id}`,
+    //       this.form,
+    //       {}
+    //     )
+    //     .then((response) => {
+    //       const savedProduct = response.data.data
+    //       this.makeToast(
+    //         'success',
+    //         `Product ${savedProduct.product_name} succesfully deleted`
+    //       )
+    //       this.getProduct()
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //       this.makeToast(
+    //         'danger',
+    //         `Product ${this.form.product_name} failed to delete`
+    //       )
+    //     })
+    // },
     getProduct() {
       this.$emit('getProduct')
     }

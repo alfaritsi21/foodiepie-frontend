@@ -27,10 +27,14 @@
             </b-form>
             <hr />
 
-            <div @register.prevent="onRegister">
+            <div>
               <p class="register-alert">
                 Don't have an account ?
-                <a class="register-here" type="register">Register here</a>
+                <a
+                  @click.prevent="onRegister"
+                  class="register-here"
+                  type="register"
+                >Register here</a>
               </p>
             </div>
           </div>

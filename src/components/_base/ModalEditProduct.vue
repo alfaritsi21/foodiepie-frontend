@@ -53,7 +53,7 @@
         block
         @click="
           hideModal()
-          patchProduct()
+          editProduct()
         "
       >Confirm</b-button>
       <b-button
@@ -69,6 +69,7 @@
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'vuex'
 
 export default {
   props: ['product'],
@@ -76,6 +77,7 @@ export default {
     return {
       product_id: [],
       form: {
+        product_id: this.product.product_id,
         product_name: this.product.product_name,
         product_price: this.product.product_price,
         category_id: this.product.category_id,
@@ -92,9 +94,11 @@ export default {
   },
   created() {
     this.getCategory()
-    this.getProduct()
   },
   methods: {
+    ...mapActions(['patchProduct']),
+    ...mapActions(['getProducts']),
+
     showModal() {
       this.$refs['my-modal'].show()
     },
@@ -150,31 +154,32 @@ export default {
           console.log(error)
         })
     },
-    patchProduct() {
-      axios
-        .patch(
-          `http://127.0.0.1:3001/product/${this.product.product_id}`,
-          this.form,
-          {}
-        )
+    editProduct() {
+      // const data = new FormData()
+      // data.append('product_id', this.form.product_id)
+      // data.append('product_name', this.form.product_name)
+      // data.append('category_id', this.form.category_id)
+      // data.append('product_price', this.form.product_price)
+      // data.append('product_status', this.form.product_status)
+      // data.append('product_image', this.form.product_image)
+      console.log(this.form)
+
+      this.patchProduct(this.form)
         .then((response) => {
-          const savedProduct = response.data.data
+          console.log(response)
+          this.getProducts()
           this.makeToast(
             'success',
-            `Product ${savedProduct.product_name} succesfully edited`
+            `Product ${this.form.product_name} succesfully created`
           )
-          this.getProduct()
         })
         .catch((error) => {
           console.log(error)
           this.makeToast(
             'danger',
-            `Product ${this.form.product_name} failed to edit`
+            `Product ${this.form.product_name} failed to create`
           )
         })
-    },
-    getProduct() {
-      this.$emit('getProduct')
     }
   }
 }

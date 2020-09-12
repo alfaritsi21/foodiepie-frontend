@@ -6,7 +6,7 @@ export default {
       page: 1,
       totalPage: 0,
       limit: 6,
-      totalData: 17
+      totalData: 29
     },
     perPage: 0,
     products: [],
@@ -66,8 +66,55 @@ export default {
             reject(error.response.msg)
           })
       })
+    },
+    patchProduct(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .patch(
+            `http://127.0.0.1:3001/product/${payload.product_id}`,
+            payload,
+            {}
+          )
+          .then(response => {
+            console.log(response)
+            resolve(response.data)
+          })
+          .catch(error => {
+            reject(error.response)
+            console.log(error.response)
+            reject(error.response.msg)
+          })
+      })
+    },
+    deleteProduct(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .delete(`http://127.0.0.1:3001/product/${payload}`)
+          .then(response => {
+            console.log(response)
+            resolve(response.data)
+          })
+          .catch(error => {
+            reject(error.response)
+            console.log(error.response)
+            reject(error.response.msg)
+          })
+      })
+    },
+    searchProduct() {
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://127.0.0.1:3001/product/search/', this.form, {})
+          .then(response => {
+            this.products = response.data.data
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      })
     }
   },
+
   getters: {
     getLimit(state) {
       return state.pagination.limit

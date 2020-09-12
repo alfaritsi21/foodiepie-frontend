@@ -283,7 +283,7 @@
                             title="Edit Product"
                             class="mt-2"
                           >
-                            <ModalEditProduct :product="item" @getProduct="getProduct" />
+                            <ModalEditProduct :product="item" />
                           </b-button>
                         </b-col>
                         <b-col md="6">
@@ -341,7 +341,7 @@
 
 <script>
 // import Card from './_base/Card.vue'
-import axios from 'axios'
+// import axios from 'axios'
 import Cart from './_base/Cart.vue'
 import ModalMenu from './_base/ModalMenu'
 import ModalEditProduct from './_base/ModalEditProduct'
@@ -512,16 +512,16 @@ export default {
     //       console.log(error)
     //     })
     // },
-    searchProduct() {
-      axios
-        .post('http://127.0.0.1:3001/product/search/', this.form, {})
-        .then((response) => {
-          this.products = response.data.data
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
+    // searchProduct() {
+    //   axios
+    //     .post('http://127.0.0.1:3001/product/search/', this.form, {})
+    //     .then((response) => {
+    //       this.products = response.data.data
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // },
     formatCurrency(number) {
       return number.toLocaleString('ID-JK', {
         style: 'currency',

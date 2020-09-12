@@ -33,6 +33,14 @@ const routes = [
       import(/* webpackChunkName: "about" */ '../views/History.vue')
   },
   {
+    path: '/category',
+    name: 'Category',
+    meta: { requiresAuth: true },
+
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/main/Category.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login,

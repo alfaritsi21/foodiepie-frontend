@@ -84,6 +84,13 @@
                 </router-link>
               </b-col>
               <b-col class="pad-upside">
+                <a href="#" v-b-tooltip.hover title="Category Menu">
+                  <router-link to="/category" v-b-tooltip.hover title="Category">
+                    <img src="../assets/add.png" alt />
+                  </router-link>
+                </a>
+              </b-col>
+              <b-col class="pad-upside">
                 <a href="#" v-b-tooltip.hover title="Create Product">
                   <ModalMenu @getProduct="getProduct" />
                   <!-- <img src="../assets/add.png" alt /> -->

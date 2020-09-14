@@ -16,7 +16,9 @@
               <b-row no-gutters>
                 <b-col md="3">
                   <b-card-img
-                    src="https://picsum.photos/400/400/?image=20"
+                    v-bind:src="
+                      urlApi + item.product.product_image
+                    "
                     alt="Image"
                     class="rounded-0"
                   ></b-card-img>
@@ -155,6 +157,7 @@ export default {
   props: ['cart'],
   data() {
     return {
+      urlApi: process.env.VUE_APP_URL,
       historyData: {
         invoice: '',
         orders: []

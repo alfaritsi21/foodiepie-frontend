@@ -9,7 +9,7 @@
         xl="1"
         class="default-container align-center pad-top-10 pad-left-10 menu-patty mt-1"
       >
-        <img src="../assets/menu-patty1.png" alt />
+        <b-icon-power class="logout h2" @click="handleLogout"></b-icon-power>
       </b-col>
       <b-col cols="10" sm="10" md="11" lg="11" xl="11" class="text-center pt-1 box-shadow">
         <h2>Category</h2>
@@ -37,7 +37,7 @@
           </b-col>
           <b-col class="pad-upside">
             <a href="#">
-              <ModalMenu />
+              <ModalAddCategory />
               <!-- <img src="../assets/add.png" alt /> -->
             </a>
           </b-col>
@@ -47,61 +47,9 @@
         <b-container fluid>
           <!-- User Interface controls -->
           <b-row>
-            <b-col lg="6" class="my-1">
-              <b-form-group
-                label="Sort"
-                label-cols-sm="3"
-                label-align-sm="right"
-                label-size="sm"
-                label-for="sortBySelect"
-                class="mb-0"
-              >
-                <b-input-group size="sm">
-                  <b-form-select
-                    v-model="sortBy"
-                    id="sortBySelect"
-                    :options="sortOptions"
-                    class="w-75"
-                  >
-                    <template v-slot:first>
-                      <option value>-- none --</option>
-                    </template>
-                  </b-form-select>
-                  <b-form-select v-model="sortDesc" size="sm" :disabled="!sortBy" class="w-25">
-                    <option :value="false">Asc</option>
-                    <option :value="true">Desc</option>
-                  </b-form-select>
-                </b-input-group>
-              </b-form-group>
-            </b-col>
-
-            <b-col lg="6" class="my-1">
-              <b-form-group
-                label="Initial sort"
-                label-cols-sm="3"
-                label-align-sm="right"
-                label-size="sm"
-                label-for="initialSortSelect"
-                class="mb-0"
-              >
-                <b-form-select
-                  v-model="sortDirection"
-                  id="initialSortSelect"
-                  size="sm"
-                  :options="['asc', 'desc', 'last']"
-                ></b-form-select>
-              </b-form-group>
-            </b-col>
-
-            <b-col lg="6" class="my-1">
-              <b-form-group
-                label="Filter"
-                label-cols-sm="3"
-                label-align-sm="right"
-                label-size="sm"
-                label-for="filterInput"
-                class="mb-0"
-              >
+            <!-- FILTER -->
+            <b-col lg="6" class="my-1 mb-4">
+              <!-- <b-form-group label-for="filterInput" class="mb-0">
                 <b-input-group size="sm">
                   <b-form-input
                     v-model="filter"
@@ -113,100 +61,125 @@
                     <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
                   </b-input-group-append>
                 </b-input-group>
-              </b-form-group>
-            </b-col>
-
-            <b-col lg="6" class="my-1">
-              <b-form-group
-                label="Filter On"
-                label-cols-sm="3"
-                label-align-sm="right"
-                label-size="sm"
-                description="Leave all unchecked to filter on all data"
-                class="mb-0"
-              >
-                <b-form-checkbox-group v-model="filterOn" class="mt-1">
-                  <b-form-checkbox value="name">Name</b-form-checkbox>
-                  <b-form-checkbox value="age">Age</b-form-checkbox>
-                  <b-form-checkbox value="isActive">Active</b-form-checkbox>
-                </b-form-checkbox-group>
-              </b-form-group>
-            </b-col>
-
-            <b-col sm="5" md="6" class="my-1">
-              <b-form-group
-                label="Per page"
-                label-cols-sm="6"
-                label-cols-md="4"
-                label-cols-lg="3"
-                label-align-sm="right"
-                label-size="sm"
-                label-for="perPageSelect"
-                class="mb-0"
-              >
-                <b-form-select
-                  v-model="perPage"
-                  id="perPageSelect"
-                  size="sm"
-                  :options="pageOptions"
-                ></b-form-select>
-              </b-form-group>
-            </b-col>
-
-            <b-col sm="7" md="6" class="my-1">
-              <b-pagination
-                v-model="currentPage"
-                :total-rows="totalRows"
-                :per-page="perPage"
-                align="fill"
-                size="sm"
-                class="my-0"
-              ></b-pagination>
+              </b-form-group>-->
             </b-col>
           </b-row>
+          <b-table striped hover :items="items" :fields="fields">
+            <template v-slot:cell(actions)="row">
+              <b-button
+                variant="success"
+                size="sm"
+                @click="info(row.item, row.index, $event.target)"
+                class="mr-1"
+              >
+                <b-icon-pencil-square
+                  @click="
+                  showModalEdit(row.item)
+              "
+                ></b-icon-pencil-square>
+              </b-button>
+              <b-button
+                variant="danger"
+                size="sm"
+                @click="info(row.item, row.index, $event.target)"
+                class="mr-1"
+              >
+                <b-icon-trash
+                  @click="
+                  showModalDelete(row.item)
+                "
+                ></b-icon-trash>
+              </b-button>
+            </template>
+          </b-table>
 
-          <!-- Main table element -->
-          <b-table
+          <!-- <b-table
             show-empty
             small
             stacked="md"
             :items="items"
             :fields="fields"
-            :current-page="currentPage"
-            :per-page="perPage"
             :filter="filter"
             :filterIncludedFields="filterOn"
-            :sort-by.sync="sortBy"
-            :sort-desc.sync="sortDesc"
-            :sort-direction="sortDirection"
             @filtered="onFiltered"
           >
-            <template v-slot:cell(name)="row">{{ row.value.first }} {{ row.value.last }}</template>
+            <template v-slot:cell(category_id)="fields">{{ fields.category_id }}</template>
 
             <template v-slot:cell(actions)="row">
               <b-button
+                variant="success"
                 size="sm"
                 @click="info(row.item, row.index, $event.target)"
                 class="mr-1"
-              >Info modal</b-button>
+              >
+                <b-icon-pencil-square></b-icon-pencil-square>
+              </b-button>
               <b-button
+                variant="danger"
                 size="sm"
-                @click="row.toggleDetails"
-              >{{ row.detailsShowing ? 'Hide' : 'Show' }} Details</b-button>
+                @click="info(row.item, row.index, $event.target)"
+                class="mr-1"
+              >
+                <b-icon-trash></b-icon-trash>
+              </b-button>
             </template>
-
-            <template v-slot:row-details="row">
-              <b-card>
-                <ul>
-                  <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-                </ul>
-              </b-card>
-            </template>
-          </b-table>
-
-          <!-- Info modal -->
-          <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal">
-            <pre>{{ infoModal.content }}</pre>
+          </b-table>-->
+          <!-- <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal"> -->
+          <!-- <pre>{{ infoModal.content }}</pre> -->
+          <!-- </b-modal> -->
+          <b-modal ref="my-modal-edit" hide-footer title="Edit Product">
+            <div class="d-block text-center">
+              <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+                <b-row>
+                  <b-col cols="2" class="form-name">
+                    <b-form-group id="input-group-1" label="Name:" label-for="input-1"></b-form-group>
+                  </b-col>
+                  <b-col cols="10">
+                    <b-form-input v-model="form.category_name" placeholder="Enter category name"></b-form-input>
+                  </b-col>
+                </b-row>
+              </b-form>
+            </div>
+            <b-button
+              class="mt-3"
+              variant="primary"
+              block
+              @click="
+          hideModalEdit()
+          editCategory()
+        "
+            >Confirm</b-button>
+            <b-button
+              class="mt-2"
+              variant="danger"
+              block
+              @click="toggleModalEdit"
+              style="color: white;"
+            >Cancel</b-button>
+          </b-modal>
+          <b-modal ref="my-modal-delete" hide-footer title="Confirmation Delete Product">
+            <div class="d-block text-center">Are you sure you want to delete this product ?</div>
+            <b-row>
+              <b-col cols="3" md="3"></b-col>
+              <b-col cols="3" md="3">
+                <b-button
+                  class="mt-4"
+                  variant="warning"
+                  @click="toggleModalDelete"
+                  style="color: white;"
+                >Cancel</b-button>
+              </b-col>
+              <b-col cols="3" md="3">
+                <b-button
+                  class="mt-4"
+                  variant="danger"
+                  @click="
+              hideModalDelete()
+              delCategory()
+            "
+                >Confirm</b-button>
+              </b-col>
+            </b-row>
           </b-modal>
         </b-container>
       </b-col>
@@ -215,89 +188,34 @@
 </template>
 
 <script>
-import ModalMenu from './_base/ModalMenu'
+import ModalAddCategory from './_base/ModalAddCategory'
 // import axios from 'axios'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'MainHistory',
+  name: 'MainCategory',
   data() {
     return {
-      items: [
-        {
-          isActive: true,
-          age: 40,
-          name: { first: 'Dickerson', last: 'Macdonald' }
-        },
-        { isActive: false, age: 21, name: { first: 'Larsen', last: 'Shaw' } },
-        {
-          isActive: false,
-          age: 9,
-          name: { first: 'Mini', last: 'Navarro' },
-          _rowVariant: 'success'
-        },
-        { isActive: false, age: 89, name: { first: 'Geneva', last: 'Wilson' } },
-        { isActive: true, age: 38, name: { first: 'Jami', last: 'Carney' } },
-        { isActive: false, age: 27, name: { first: 'Essie', last: 'Dunlap' } },
-        { isActive: true, age: 40, name: { first: 'Thor', last: 'Macdonald' } },
-        {
-          isActive: true,
-          age: 87,
-          name: { first: 'Larsen', last: 'Shaw' },
-          _cellVariants: { age: 'danger', isActive: 'warning' }
-        },
-        { isActive: false, age: 26, name: { first: 'Mitzi', last: 'Navarro' } },
-        {
-          isActive: false,
-          age: 22,
-          name: { first: 'Genevieve', last: 'Wilson' }
-        },
-        { isActive: true, age: 38, name: { first: 'John', last: 'Carney' } },
-        { isActive: false, age: 29, name: { first: 'Dick', last: 'Dunlap' } }
-      ],
-      fields: [
-        {
-          key: 'name',
-          label: 'Person Full name',
-          sortable: true,
-          sortDirection: 'desc'
-        },
-        {
-          key: 'age',
-          label: 'Person age',
-          sortable: true,
-          class: 'text-center'
-        },
-        {
-          key: 'isActive',
-          label: 'is Active',
-          formatter: (value, key, item) => {
-            return value ? 'Yes' : 'No'
-          },
-          sortable: true,
-          sortByFormatted: true,
-          filterByFormatted: true
-        },
-        { key: 'actions', label: 'Actions' }
-      ],
-      totalRows: 1,
-      currentPage: 1,
-      perPage: 5,
-      pageOptions: [5, 10, 15],
-      sortBy: '',
-      sortDesc: false,
-      sortDirection: 'asc',
-      filter: null,
-      filterOn: [],
+      fields: ['ID', 'Name', 'Created', 'Updated', 'Actions'],
+      items: [],
       infoModal: {
         id: 'info-modal',
         title: '',
         content: ''
-      }
+      },
+      // sortBy: '',
+      filter: null,
+      filterOn: [],
+      form: {
+        category_id: 0,
+        category_name: this.category_name
+      },
+      show: true
     }
   },
   components: {
     // NavbarHistory
-    ModalMenu
+    ModalAddCategory
   },
   sortOptions() {
     // Create an options list from our fields
@@ -311,9 +229,46 @@ export default {
     // Set the initial number of items
     this.totalRows = this.items.length
   },
+  created() {
+    this.initiateCategory()
+  },
+  computed: {
+    ...mapGetters({
+      category: 'getCategory',
+      category_id: 'getCategoryId',
+      category_name: 'getCategoryName',
+      category_created_at: 'getCategoryCreated',
+      category_updated_at: 'getCategoryUpdated'
+    })
+  },
   methods: {
+    ...mapActions({ getCategory: 'getCategories' }),
+    ...mapActions(['patchCategory']),
+    ...mapActions(['deleteCategory']),
+    initiateCategory() {
+      this.getCategory()
+        .then((response) => {
+          this.setTableItems()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    setTableItems() {
+      let newItems = []
+      this.category.forEach((item) => {
+        const data = {
+          ID: item.category_id,
+          Name: item.category_name,
+          Created: new Date(item.category_created_at).toLocaleString(),
+          Updated: new Date(item.category_updated_at).toLocaleString()
+        }
+        newItems = [...newItems, data]
+      })
+      this.items = newItems
+    },
     info(item, index, button) {
-      this.infoModal.title = `Row index: ${index}`
+      this.infoModal.title = 'Edit Category'
       this.infoModal.content = JSON.stringify(item, null, 2)
       this.$root.$emit('bv::show::modal', this.infoModal.id, button)
     },
@@ -325,6 +280,90 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    showModalEdit(item) {
+      this.form.category_id = item.ID
+      this.$refs['my-modal-edit'].show()
+    },
+    showModalDelete(item) {
+      this.form.category_id = item.ID
+      this.$refs['my-modal-delete'].show()
+    },
+    hideModalEdit() {
+      this.$refs['my-modal-edit'].hide()
+    },
+    hideModalDelete() {
+      this.$refs['my-modal-delete'].hide()
+    },
+    toggleModalEdit() {
+      // We pass the ID of the button that we want to return focus to
+      // when the modal has hidden
+      this.$refs['my-modal-edit'].toggle('#toggle-btn')
+    },
+    toggleModalDelete() {
+      // We pass the ID of the button that we want to return focus to
+      // when the modal has hidden
+      this.$refs['my-modal-delete'].toggle('#toggle-btn')
+    },
+    onSubmit(evt) {
+      evt.preventDefault()
+      alert(JSON.stringify(this.form))
+    },
+    onReset(evt) {
+      evt.preventDefault()
+      // Reset our form values
+      this.form.email = ''
+      this.form.name = ''
+      this.form.food = null
+      this.form.checked = []
+      // Trick to reset/clear native browser form validation state
+      this.show = false
+      this.$nextTick(() => {
+        this.show = true
+      })
+    },
+    makeToast(variant = null, message) {
+      this.$bvToast.toast(`${message}`, {
+        title: 'Notification',
+        variant: variant,
+        solid: true
+      })
+    },
+    editCategory() {
+      this.patchCategory(this.form)
+        .then((response) => {
+          console.log(response)
+          this.initiateCategory()
+          this.makeToast(
+            'success',
+            `Category ${this.form.category_name} succesfully edited`
+          )
+        })
+        .catch((error) => {
+          console.log(error)
+          this.makeToast(
+            'danger',
+            `Product ${this.form.product_name} failed to edit`
+          )
+        })
+    },
+    delCategory() {
+      this.deleteCategory(this.form)
+        .then((response) => {
+          console.log(response)
+          this.initiateCategory()
+          this.makeToast(
+            'success',
+            `Category ${this.form.category_name} succesfully deleted`
+          )
+        })
+        .catch((error) => {
+          console.log(error)
+          this.makeToast(
+            'danger',
+            `Category ${this.form.category_name} failed to delete`
+          )
+        })
     }
   }
 }

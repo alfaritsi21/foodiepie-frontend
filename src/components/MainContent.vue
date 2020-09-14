@@ -12,7 +12,7 @@
             class="default-container align-center pad-top-10 pad-left-10 menu-patty"
           >
             <!-- <img src="../assets/menu-patty1.png" alt /> -->
-            <a class="logout" @click="handleLogout">Logout</a>
+            <b-icon-power class="logout h2" @click="handleLogout"></b-icon-power>
           </b-col>
           <b-col
             cols="5"
@@ -83,14 +83,14 @@
                   <img src="../assets/clipboard.png" alt />
                 </router-link>
               </b-col>
-              <b-col class="pad-upside">
+              <b-col class="pad-upside" v-show="isAdmin">
                 <a href="#" v-b-tooltip.hover title="Category Menu">
                   <router-link to="/category" v-b-tooltip.hover title="Category">
-                    <img src="../assets/add.png" alt />
+                    <b-icon-layout-text-window class="h2"></b-icon-layout-text-window>
                   </router-link>
                 </a>
               </b-col>
-              <b-col class="pad-upside">
+              <b-col class="pad-upside" v-show="isAdmin">
                 <a href="#" v-b-tooltip.hover title="Create Product">
                   <ModalMenu @getProduct="getProduct" />
                   <!-- <img src="../assets/add.png" alt /> -->
@@ -143,7 +143,25 @@
                     ></b-button>
                   </b-col>-->
                   <b-col cols="5" md="5">
-                    <b-row>
+                    <mdb-form-inline>
+                      <b-input-group>
+                        <input
+                          v-model="form.product_name"
+                          v-on:keyup.enter="searchProduct(form)"
+                          class="form-control mr-sm-2"
+                          type="text"
+                          placeholder="Search Product"
+                          aria-label="Search"
+                        />
+                        <b-input-group-append>
+                          <b-button variant="info" size="sm" @click="searchProduct(form)">
+                            <b-icon-search></b-icon-search>
+                          </b-button>
+                        </b-input-group-append>
+                      </b-input-group>
+                    </mdb-form-inline>
+                    <!-- ======================================================= -->
+                    <!-- <b-row>
                       <b-col cols="1" sm="1" md="1" lg="1" xl="1">
                         <b-button variant="outline-success" @click="searchProduct()">
                           <b-icon-search></b-icon-search>
@@ -162,7 +180,8 @@
                           />
                         </mdb-form-inline>
                       </b-col>
-                    </b-row>
+                    </b-row>-->
+                    <!-- ========================================================= -->
                   </b-col>
 
                   <b-col cols="3" md="3">
@@ -198,14 +217,20 @@
                   <b-card
                     v-if="!isInCart(item)"
                     v-bind:title="item.product_name"
-                    img-src="https://picsum.photos/600/300/?image=20"
+                    v-bind:img-src="
+                      urlApi + item.product_image
+                    "
                     img-alt="Image"
                     img-top
                     tag="article"
                     style="max-width: 20rem;"
                     class="mb-2"
                   >
-                    <b-card-text>{{ formatCurrency(item.product_price) }}</b-card-text>
+                    <b-card-text>
+                      {{
+                      formatCurrency(item.product_price)
+                      }}
+                    </b-card-text>
 
                     <b-button
                       v-if="!isInCart(item)"
@@ -224,7 +249,7 @@
                       title="Cancel Order"
                     >Cancel</b-button>
 
-                    <b-container fluid class="bv-example-row mt-1 pr-0 pl-0">
+                    <b-container fluid class="bv-example-row mt-1 pr-0 pl-0" v-show="isAdmin">
                       <b-row>
                         <b-col md="6">
                           <b-button
@@ -261,7 +286,11 @@
                     style="max-width: 20rem;"
                     class="mb-2"
                   >
-                    <b-card-text>{{ formatCurrency(item.product_price) }}</b-card-text>
+                    <b-card-text>
+                      {{
+                      formatCurrency(item.product_price)
+                      }}
+                    </b-card-text>
 
                     <b-button
                       v-if="!isInCart(item)"
@@ -365,10 +394,10 @@ export default {
   },
   data() {
     return {
+      urlApi: process.env.VUE_APP_URL,
       count: 0,
       optionsOrder: [
         { value: 'product_id', text: 'Sort By' },
-        { value: 'product_id', text: 'Product ID' },
         { value: 'product_name', text: 'Product Name' },
         { value: 'product_price', text: 'Product Price' },
         { value: 'category_id', text: 'Category ID' },
@@ -414,7 +443,8 @@ export default {
       products: 'getProduct',
       addToCartButton: 'getCartButton',
       order: 'getOrder',
-      order_type: 'getOrderType'
+      order_type: 'getOrderType',
+      isAdmin: 'isAdmin'
     })
     // rows() {
     //   return this.totalData
@@ -422,6 +452,7 @@ export default {
   },
   methods: {
     ...mapActions({ getProduct: 'getProducts' }),
+    ...mapActions(['searchProduct']),
     ...mapMutations(['setPage']),
     handlePageChange(numberPage) {
       this.$router.push(`?page=${numberPage}`)

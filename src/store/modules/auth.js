@@ -105,6 +105,9 @@ export default {
   getters: {
     isLogin(state) {
       return state.token !== null
+    },
+    isAdmin(state) {
+      return state.user.user_role === 1
     }
   }
 }

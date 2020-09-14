@@ -1,8 +1,8 @@
 <template>
   <div>
     <a id="show-btn" @click="
+        initiateFormValue()
         showModal()
-        getProduct()
       ">
       <b-icon-pencil-square></b-icon-pencil-square>
     </a>
@@ -28,6 +28,14 @@
                 v-model="form.product_price"
                 placeholder="Enter product price"
               ></b-form-input>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="2" class="form-name">
+              <b-form-group id="input-group-2" label="Image :" label-for="input-2"></b-form-group>
+            </b-col>
+            <b-col cols="10">
+              <b-form-file type="file" @change="handleFile" plain></b-form-file>
             </b-col>
           </b-row>
           <b-row>
@@ -80,8 +88,8 @@ export default {
         product_id: this.product.product_id,
         product_name: this.product.product_name,
         product_price: this.product.product_price,
+        product_image: this.product.product_image,
         category_id: this.product.category_id,
-        product_status: 1,
         food: null,
         file2: null,
         checked: []
@@ -98,7 +106,22 @@ export default {
   methods: {
     ...mapActions(['patchProduct']),
     ...mapActions(['getProducts']),
-
+    handleFile(event) {
+      this.form.product_image = event.target.files[0]
+      console.log(event.target.files[0])
+    },
+    initiateFormValue() {
+      this.form = {
+        product_id: this.product.product_id,
+        product_name: this.product.product_name,
+        product_price: this.product.product_price,
+        product_image: this.product.product_image,
+        category_id: this.product.category_id,
+        food: null,
+        file2: null,
+        checked: []
+      }
+    },
     showModal() {
       this.$refs['my-modal'].show()
     },
@@ -170,14 +193,14 @@ export default {
           this.getProducts()
           this.makeToast(
             'success',
-            `Product ${this.form.product_name} succesfully created`
+            `Product ${this.form.product_name} succesfully edited`
           )
         })
         .catch((error) => {
           console.log(error)
           this.makeToast(
             'danger',
-            `Product ${this.form.product_name} failed to create`
+            `Product ${this.form.product_name} failed to edit`
           )
         })
     }

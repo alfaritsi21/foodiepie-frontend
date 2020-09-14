@@ -6,7 +6,7 @@ export default {
       page: 1,
       totalPage: 0,
       limit: 6,
-      totalData: 29
+      totalData: 40
     },
     perPage: 0,
     products: [],
@@ -68,11 +68,18 @@ export default {
       })
     },
     patchProduct(context, payload) {
+      const data = new FormData()
+      data.append('product_id', payload.product_id)
+      data.append('product_name', payload.product_name)
+      data.append('category_id', payload.category_id)
+      data.append('product_price', payload.product_price)
+      data.append('product_status', payload.product_status)
+      data.append('product_image', payload.product_image)
       return new Promise((resolve, reject) => {
         axios
           .patch(
             `http://127.0.0.1:3001/product/${payload.product_id}`,
-            payload,
+            data,
             {}
           )
           .then(response => {
@@ -101,12 +108,14 @@ export default {
           })
       })
     },
-    searchProduct() {
+    searchProduct(context, payload) {
+      console.log(payload.product)
       return new Promise((resolve, reject) => {
         axios
-          .post('http://127.0.0.1:3001/product/search/', this.form, {})
+          .post('http://127.0.0.1:3001/product/search/', payload, {})
           .then(response => {
-            this.products = response.data.data
+            context.commit('setProduct', response.data)
+            context.commit('setCartButton', response.data)
           })
           .catch(error => {
             console.log(error)

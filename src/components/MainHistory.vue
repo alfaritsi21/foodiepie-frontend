@@ -9,7 +9,7 @@
         xl="1"
         class="default-container align-center pad-top-10 pad-left-10 menu-patty mt-1"
       >
-        <img src="../assets/menu-patty1.png" alt />
+        <b-icon-power class="logout h2"></b-icon-power>
       </b-col>
       <b-col cols="10" sm="10" md="11" lg="11" xl="11" class="text-center pt-1 box-shadow">
         <h2>History</h2>
@@ -33,12 +33,6 @@
           <b-col class="pad-upside">
             <a href="history">
               <img src="../assets/clipboard.png" alt />
-            </a>
-          </b-col>
-          <b-col class="pad-upside">
-            <a href="#">
-              <ModalMenu />
-              <!-- <img src="../assets/add.png" alt /> -->
             </a>
           </b-col>
         </b-row>
@@ -113,7 +107,7 @@
                 <b-form-select v-model="filter" :options="optionsFilter" class="mb-3"></b-form-select>
               </b-col>
             </b-row>
-            <b-table class="table-responsive" striped hover :items="items" :fields="fields"></b-table>
+            <b-table striped hover :items="items" :fields="fields"></b-table>
           </div>
         </div>
         <!-- =======Table============= -->
@@ -123,7 +117,6 @@
 </template>
 
 <script>
-import ModalMenu from './_base/ModalMenu'
 import axios from 'axios'
 
 export default {
@@ -157,7 +150,6 @@ export default {
   },
   components: {
     // NavbarHistory
-    ModalMenu
   },
   created() {
     this.getHistory()

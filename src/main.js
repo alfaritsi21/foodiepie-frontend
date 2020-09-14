@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Chartkick from 'vue-chartkick'
 import Chart from 'chart.js'
+require('dotenv').config()
 
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)

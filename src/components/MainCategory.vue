@@ -9,7 +9,7 @@
         xl="1"
         class="default-container align-center pad-top-10 pad-left-10 menu-patty mt-1"
       >
-        <b-icon-power class="logout h2" @click="handleLogout"></b-icon-power>
+        <b-icon-power class="logout h2"></b-icon-power>
       </b-col>
       <b-col cols="10" sm="10" md="11" lg="11" xl="11" class="text-center pt-1 box-shadow">
         <h2>Category</h2>

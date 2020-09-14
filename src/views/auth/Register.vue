@@ -33,6 +33,14 @@
               </b-button>
             </b-form>
             <hr />
+            <div>
+              <p class="register-alert">
+                Back to
+                <a @click.prevent="onLogin" class="register-here" type="login"
+                  >Login</a
+                >
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -48,7 +56,8 @@ export default {
     return {
       form: {
         user_email: '',
-        user_password: ''
+        user_password: '',
+        user_name: ''
       }
     }
   },
@@ -66,14 +75,17 @@ export default {
     ...mapActions(['register']),
     onSubmit() {
       // console.log(this.form)
-      this.login(this.form)
-        .then((result) => {
+      this.register(this.form)
+        .then(result => {
           console.log(result)
           this.$router.push('/login')
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
+    },
+    onLogin() {
+      this.$router.push('/login')
     },
     onReset() {
       this.form = {

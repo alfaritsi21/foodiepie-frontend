@@ -12,13 +12,15 @@
             v-for="(item, index) in cart"
             :key="index"
           >
-            <b-card no-body class="overflow-hidden mb-3" style="max-width: 540px;">
+            <b-card
+              no-body
+              class="overflow-hidden mb-3"
+              style="max-width: 540px;"
+            >
               <b-row no-gutters>
                 <b-col md="3">
                   <b-card-img
-                    v-bind:src="
-                      urlApi + item.product.product_image
-                    "
+                    v-bind:src="urlApi + item.product.product_image"
                     alt="Image"
                     class="rounded-0"
                   ></b-card-img>
@@ -38,19 +40,27 @@
                             md="4"
                             variant="primary"
                             @click="decrement(item)"
-                          >-</b-button>
+                            >-</b-button
+                          >
                           <!-- <input type="text" class="input-text" placeholder="0" /> -->
-                          <input type="text" class="input-text" :value="item.quantity" />
+                          <input
+                            type="text"
+                            class="input-text"
+                            :value="item.quantity"
+                          />
                           <b-button
                             type="button"
                             md="4"
                             variant="primary"
                             @click="increment(item)"
-                          >+</b-button>
+                            >+</b-button
+                          >
                         </b-button-group>
                       </b-col>
                       <b-col>
-                        <h5>Rp. {{ item.product.product_price * item.quantity }}</h5>
+                        <h5>
+                          Rp. {{ item.product.product_price * item.quantity }}
+                        </h5>
                       </b-col>
                     </b-row>
                   </b-container>
@@ -72,7 +82,7 @@
           <h5>Total:</h5>
         </b-col>
         <b-col cols="6">
-          <h5>{{ formatCurrency(calculateTotalOrder())}}*</h5>
+          <h5>{{ formatCurrency(calculateTotalOrder()) }}*</h5>
         </b-col>
       </b-row>
       <b-row>
@@ -85,7 +95,10 @@
           block
           variant="primary"
           id="show-btn"
-          @click="$bvModal.show('bv-modal-example'); confirmPayment()"
+          @click="
+            $bvModal.show('bv-modal-example')
+            confirmPayment()
+          "
         >
           <b>Checkout</b>
         </b-button>
@@ -102,7 +115,12 @@
                 <h6>Receipt no: #{{ historyData.invoice }}</h6>
               </b-col>
             </b-row>
-            <b-row v-for="(item, index) in cart" :key="index" align-h="between" class="mt-3">
+            <b-row
+              v-for="(item, index) in cart"
+              :key="index"
+              align-h="between"
+              class="mt-3"
+            >
               <b-col cols="6" class="text-left">
                 <h6>{{ item.product.product_name }} x{{ item.quantity }}</h6>
               </b-col>
@@ -123,7 +141,13 @@
                 <h6>Total</h6>
               </b-col>
               <b-col cols="4" class="text-right">
-                <h6>{{ formatCurrency(calculateTotalOrder() + calculateTotalOrder() * 0.1) }}</h6>
+                <h6>
+                  {{
+                    formatCurrency(
+                      calculateTotalOrder() + calculateTotalOrder() * 0.1
+                    )
+                  }}
+                </h6>
               </b-col>
             </b-row>
             <b-row align-h="between" class="mt-3">
@@ -136,9 +160,26 @@
             class="mt-3"
             variant="primary"
             block
-            @click="$bvModal.hide('bv-modal-example'); postHistory(); clearCart();"
+            @click="
+              $bvModal.hide('bv-modal-example')
+              postHistory()
+              clearCart()
+            "
           >
             <b>Print</b>
+          </b-button>
+          <b-button
+            class="mt-3"
+            variant="success"
+            block
+            @click="
+              $bvModal.hide('bv-modal-example')
+              postHistory()
+              clearCart()
+              createPDF()
+            "
+          >
+            <b>Save to PDF</b>
           </b-button>
         </b-modal>
       </div>
@@ -151,6 +192,7 @@
 
 <script>
 import axios from 'axios'
+// import jsPDF from 'jspdf'
 
 export default {
   name: 'Cart',
@@ -168,6 +210,12 @@ export default {
     this.getHistory()
   },
   methods: {
+    // createPDF() {
+    //   eslint-disable-next-line new-cap
+    //   const doc = new jsPDF()
+    //   doc.text('Hello world!', 10, 10)
+    //   doc.save('a4.pdf')
+    // },
     formatCurrency(number) {
       return number.toLocaleString('ID-JK', {
         style: 'currency',
@@ -220,22 +268,22 @@ export default {
     getHistory() {
       axios
         .get('http://127.0.0.1:3001/history')
-        .then((response) => {
+        .then(response => {
           this.history = response.data.data
           this.invoice = response.data.data.invoice
           console.log(this.invoice)
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
     postHistory() {
       axios
         .post('http://127.0.0.1:3001/history', this.historyData, {})
-        .then((response) => {
+        .then(response => {
           this.makeToast('success', 'Order has been successfully saved')
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
           this.makeToast('danger', 'Order Failed')
         })
@@ -244,7 +292,7 @@ export default {
       const isInCart = this.isInCart(data)
       if (isInCart) {
         const itemInCart = this.cart.find(
-          (value) => value.product_id === data.product_id
+          value => value.product_id === data.product_id
         )
         const index = this.cart.indexOf(itemInCart)
         if (index > -1) {

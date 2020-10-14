@@ -15,7 +15,7 @@
             <b-card
               no-body
               class="overflow-hidden mb-3"
-              style="max-width: 540px;"
+              style="max-width: 540px"
             >
               <b-row no-gutters>
                 <b-col md="3">
@@ -192,6 +192,8 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters, mapActions } from 'vuex'
+
 // import jsPDF from 'jspdf'
 
 export default {
@@ -208,6 +210,14 @@ export default {
   },
   created() {
     this.getHistory()
+  },
+  computed: {
+    ...mapGetters({
+      historyData: {
+        invoice: 'getInvoiceData',
+        orders: 'getOrderData'
+      }
+    })
   },
   methods: {
     // createPDF() {
@@ -265,25 +275,29 @@ export default {
       this.historyData.invoice = 'ARQ-' + Math.floor(Math.random() * 5000) * 250
       this.historyData.orders = this.cart
     },
-    getHistory() {
-      axios
-        .get('http://127.0.0.1:3001/history')
-        .then(response => {
-          this.history = response.data.data
-          this.invoice = response.data.data.invoice
-          console.log(this.invoice)
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
+    ...mapActions({
+      getHistory: 'getHistoryInvoice',
+      postHistory: 'postHistories'
+    }),
+    // getHistory() {
+    //   axios
+    //     .get('http://127.0.0.1:3001/history')
+    //     .then(response => {
+    //       this.history = response.data.data
+    //       this.invoice = response.data.data.invoice
+    //       console.log(this.invoice)
+    //     })
+    //     .catch(error => {
+    //       console.log(error)
+    //     })
+    // },
     postHistory() {
       axios
         .post('http://127.0.0.1:3001/history', this.historyData, {})
-        .then(response => {
+        .then((response) => {
           this.makeToast('success', 'Order has been successfully saved')
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
           this.makeToast('danger', 'Order Failed')
         })
@@ -292,7 +306,7 @@ export default {
       const isInCart = this.isInCart(data)
       if (isInCart) {
         const itemInCart = this.cart.find(
-          value => value.product_id === data.product_id
+          (value) => value.product_id === data.product_id
         )
         const index = this.cart.indexOf(itemInCart)
         if (index > -1) {

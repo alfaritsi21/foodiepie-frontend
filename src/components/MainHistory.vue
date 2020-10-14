@@ -11,7 +11,14 @@
       >
         <b-icon-power class="logout h2"></b-icon-power>
       </b-col>
-      <b-col cols="10" sm="10" md="11" lg="11" xl="11" class="text-center pt-1 box-shadow">
+      <b-col
+        cols="10"
+        sm="10"
+        md="11"
+        lg="11"
+        xl="11"
+        class="text-center pt-1 box-shadow"
+      >
         <h2>History</h2>
       </b-col>
     </b-row>
@@ -26,14 +33,14 @@
       >
         <b-row cols="1">
           <b-col class="pad-upside">
-            <a href="/">
+            <router-link to="/" v-b-tooltip.hover title="Home">
               <img src="../assets/fork.png" alt />
-            </a>
+            </router-link>
           </b-col>
           <b-col class="pad-upside">
-            <a href="history">
+            <router-link to="/history" v-b-tooltip.hover title="History">
               <img src="../assets/clipboard.png" alt />
-            </a>
+            </router-link>
           </b-col>
         </b-row>
       </b-col>
@@ -47,7 +54,7 @@
                 <h5>{{ formatCurrency(todayIncome) }}</h5>
                 <p>
                   {{ incomeIncrease }} Yesterday ({{
-                  formatCurrency(yesterdayIncome)
+                    formatCurrency(yesterdayIncome)
                   }})
                 </p>
               </div>
@@ -70,11 +77,7 @@
               <div class="center-text">
                 <p>This Year's Income</p>
                 <h5>{{ formatCurrency(yearlyIncome) }}</h5>
-                <p>
-                  {{ lastYearIncrease }} Last Year ({{
-                  formatCurrency(lastYearIncome)
-                  }})
-                </p>
+                <p>Last Year ({{ formatCurrency(lastYearIncome) }})</p>
               </div>
             </div>
           </b-col>
@@ -86,9 +89,14 @@
             <b-row align-h="between">
               <b-col cols="3">
                 <h3>Revenue</h3>
+                <button @click="showChart">aaa</button>
               </b-col>
               <b-col cols="3">
-                <b-form-select v-model="chartFilter" :options="optionsChart" class="mb-3"></b-form-select>
+                <b-form-select
+                  v-model="chartFilter"
+                  :options="optionsChart"
+                  class="mb-3"
+                ></b-form-select>
               </b-col>
             </b-row>
             <line-chart :data="chartData"></line-chart>
@@ -104,7 +112,11 @@
                 <h3>Recent Order</h3>
               </b-col>
               <b-col cols="3">
-                <b-form-select v-model="filter" :options="optionsFilter" class="mb-3"></b-form-select>
+                <b-form-select
+                  v-model="filter"
+                  :options="optionsFilter"
+                  class="mb-3"
+                ></b-form-select>
               </b-col>
             </b-row>
             <b-table striped hover :items="items" :fields="fields"></b-table>
@@ -118,6 +130,7 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'MainHistory',
@@ -125,26 +138,20 @@ export default {
     return {
       // Note `isActive` is left out and will not appear in the rendered table
       fields: ['invoice', 'cashier', 'date', 'orders', 'amount'],
-      items: [],
+      // items: [],
       chartData: {},
       chartFilter: 'month',
-      optionsChart: [
-        { value: 'month', text: 'This Month' },
-        { value: 'year', text: 'This Year' }
-      ],
+      optionsChart: [{ value: 'month', text: 'This Month' }],
       filter: 'today',
-      optionsFilter: [
-        { value: 'today', text: 'All' },
-        { value: 'week', text: 'This Week' }
-      ],
-      todayIncome: 0,
-      yesterdayIncome: 0,
+      optionsFilter: [{ value: 'today', text: 'All' }],
+      // todayIncome: 0,
+      // yesterdayIncome: 0,
       incomeIncrease: '',
-      countOrder: 0,
-      lastWeekCountOrder: 0,
+      // countOrder: 0,
+      // lastWeekCountOrder: 0,
       orderIncrease: '',
-      yearlyIncome: 0,
-      lastYearIncome: 0,
+      // yearlyIncome: 0,
+      // lastYearIncome: 0,
       lastYearIncrease: 0
     }
   },
@@ -161,117 +168,110 @@ export default {
     this.getYearIncome()
     this.getLastYearIncome()
   },
+  computed: {
+    ...mapGetters({
+      items: 'getHistoryData',
+      todayIncome: 'getTodayIncomeData',
+      yesterdayIncome: 'getYesterdayIncomeData',
+      countOrder: 'getcountOrderData',
+      lastWeekCountOrder: 'getLastWeekCountOrderData',
+      yearlyIncome: 'getYearlyIncomeData',
+      lastYearIncome: 'getLastYearIncomeData'
+      // chartData: 'getChartData'
+    })
+  },
   methods: {
-    getHistory() {
-      axios
-        .get('http://127.0.0.1:3001/history/')
-        .then((response) => {
-          response.data.data.forEach((item) => {
-            let orders = ''
-            item.orders.forEach((element) => {
-              orders += `${element.product_name} x${element.quantity}, `
-            })
-            const data = {
-              invoice: item.details.invoice,
-              cashier: 'Pevita Pearce',
-              date: new Date(item.details.history_created_at).toLocaleString(),
-              orders: orders,
-              amount: this.formatCurrency(item.details.history_subtotal)
-            }
-            this.items = [...this.items, data]
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+    ...mapActions({
+      getHistory: 'getHistories',
+      getTodayIncome: 'getTodayIncomes',
+      getYesterdayIncome: 'getYesterdayIncomes',
+      getCountOrder: 'getCountOrders',
+      getLastWeekCountOrder: 'getLastWeekCountOrders',
+      getYearIncome: 'getYearIncomes',
+      getLastYearIncome: 'getLastYearIncomes',
+      getMonthlyIncomeData: 'getMonthlyIncomeDatas'
+    }),
+    showChart() {
+      this.getHistory()
+      console.log(this.chartData)
+      console.log(this.items)
     },
-    getTodayIncome() {
-      const date = new Date().toISOString().slice(0, 10)
-      // console.log(date)
-      axios
-        .post('http://127.0.0.1:3001/history/income/today', { date }, {})
-        .then((response) => {
-          this.todayIncome = response.data.data[0].daily_income
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    getYesterdayIncome() {
-      const d = new Date()
-      d.setDate(d.getDate() - 1)
-      const date = d.toISOString().slice(0, 10)
 
-      // console.log(date)
-      axios
-        .post('http://127.0.0.1:3001/history/income/today', { date }, {})
-        .then((response) => {
-          this.yesterdayIncome = response.data.data[0].daily_income
-          if (this.yesterdayIncome) {
-            const increase =
-              ((this.todayIncome - this.yesterdayIncome) /
-                this.yesterdayIncome) *
-              100
-            if (increase >= 0) {
-              this.incomeIncrease = `+${increase.toFixed(3)}%`
-            } else {
-              this.incomeIncrease = `-${increase.toFixed(3)}%`
-            }
-          } else {
-            this.yesterdayIncome = 0
-            this.incomeIncrease = ''
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
+    // getYesterdayIncome() {
+    //   const d = new Date()
+    //   d.setDate(d.getDate() - 1)
+    //   const date = d.toISOString().slice(0, 10)
+
+    //   // console.log(date)
+    //   axios
+    //     .post('http://127.0.0.1:3001/history/income/today', { date }, {})
+    //     .then((response) => {
+    //       this.yesterdayIncome = response.data.data[0].daily_income
+    //       if (this.yesterdayIncome) {
+    //         const increase =
+    //           ((this.todayIncome - this.yesterdayIncome) /
+    //             this.yesterdayIncome) *
+    //           100
+    //         if (increase >= 0) {
+    //           this.incomeIncrease = `+${increase.toFixed(3)}%`
+    //         } else {
+    //           this.incomeIncrease = `-${increase.toFixed(3)}%`
+    //         }
+    //       } else {
+    //         this.yesterdayIncome = 0
+    //         this.incomeIncrease = ''
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // },
     formatCurrency(number) {
       return number.toLocaleString('ID-JK', {
         style: 'currency',
         currency: 'IDR'
       })
     },
-    getCountOrder() {
-      const date = new Date().toISOString().slice(0, 10)
-      console.log(date)
-      axios
-        .post('http://127.0.0.1:3001/history/count/order', { date }, {})
-        .then((response) => {
-          this.countOrder = response.data.data[0].count_order
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    getLastWeekCountOrder() {
-      const d = new Date()
-      d.setDate(d.getDate() - 7)
-      const date = d.toISOString().slice(0, 10)
-      console.log(date)
-      axios
-        .post('http://127.0.0.1:3001/history/count/order', { date }, {})
-        .then((response) => {
-          this.lastWeekCountOrder = response.data.data[0].count_order
-          if (this.lastWeekCountOrder) {
-            const increase =
-              ((this.countOrder - this.lastWeekCountOrder) /
-                this.lastWeekCountOrder) *
-              100
-            if (increase >= 0) {
-              this.orderIncrease = `+${increase.toFixed(3)}%`
-            } else {
-              this.orderIncrease = `-${increase.toFixed(3)}%`
-            }
-          } else {
-            this.lastWeekCountOrder = 0
-            this.orderIncrease = ''
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
+    // getCountOrder() {
+    //   const date = new Date().toISOString().slice(0, 10)
+    //   console.log(date)
+    //   axios
+    //     .post('http://127.0.0.1:3001/history/count/order', { date }, {})
+    //     .then((response) => {
+    //       this.countOrder = response.data.data[0].count_order
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // },
+    // getLastWeekCountOrder() {
+    //   const d = new Date()
+    //   d.setDate(d.getDate() - 7)
+    //   const date = d.toISOString().slice(0, 10)
+    //   console.log(date)
+    //   axios
+    //     .post('http://127.0.0.1:3001/history/count/order', { date }, {})
+    //     .then((response) => {
+    //       this.lastWeekCountOrder = response.data.data[0].count_order
+    //       if (this.lastWeekCountOrder) {
+    //         const increase =
+    //           ((this.countOrder - this.lastWeekCountOrder) /
+    //             this.lastWeekCountOrder) *
+    //           100
+    //         if (increase >= 0) {
+    //           this.orderIncrease = `+${increase.toFixed(3)}%`
+    //         } else {
+    //           this.orderIncrease = `-${increase.toFixed(3)}%`
+    //         }
+    //       } else {
+    //         this.lastWeekCountOrder = 0
+    //         this.orderIncrease = ''
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // },
     getMonthlyIncomeData() {
       const date = new Date().toISOString().slice(0, 10)
       // console.log(date)
@@ -295,48 +295,48 @@ export default {
         .catch((error) => {
           console.log(error)
         })
-    },
-    getYearIncome() {
-      const date = new Date().toISOString().slice(0, 10)
-      // console.log(date)
-      axios
-        .post('http://127.0.0.1:3001/history/income/year', { date }, {})
-        .then((response) => {
-          this.yearlyIncome = response.data.data[0].yearly_income
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    getLastYearIncome() {
-      const d = new Date()
-      d.setDate(d.getDate() - 365)
-      const date = d.toISOString().slice(0, 10)
-
-      // console.log(date)
-      axios
-        .post('http://127.0.0.1:3001/history/income/year', { date }, {})
-        .then((response) => {
-          this.lastYearIncome = response.data.data[0].yearly_income
-          if (this.lastYearIncome) {
-            const increase =
-              ((this.yearlyIncome - this.lastYearIncome) /
-                this.lastYearIncome) *
-              100
-            if (increase >= 0) {
-              this.lastYearIncrease = `+${increase.toFixed(3)}%`
-            } else {
-              this.lastYearIncrease = `-${increase.toFixed(3)}%`
-            }
-          } else {
-            this.lastYearIncome = 0
-            this.lastYearIncrease = ''
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
     }
+    // getYearIncome() {
+    //   const date = new Date().toISOString().slice(0, 10)
+    //   // console.log(date)
+    //   axios
+    //     .post('http://127.0.0.1:3001/history/income/year', { date }, {})
+    //     .then((response) => {
+    //       this.yearlyIncome = response.data.data[0].yearly_income
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // },
+    // getLastYearIncome() {
+    //   const d = new Date()
+    //   d.setDate(d.getDate() - 365)
+    //   const date = d.toISOString().slice(0, 10)
+
+    //   // console.log(date)
+    //   axios
+    //     .post('http://127.0.0.1:3001/history/income/year', { date }, {})
+    //     .then((response) => {
+    //       this.lastYearIncome = response.data.data[0].yearly_income
+    //       if (this.lastYearIncome) {
+    //         const increase =
+    //           ((this.yearlyIncome - this.lastYearIncome) /
+    //             this.lastYearIncome) *
+    //           100
+    //         if (increase >= 0) {
+    //           this.lastYearIncrease = `+${increase.toFixed(3)}%`
+    //         } else {
+    //           this.lastYearIncrease = `-${increase.toFixed(3)}%`
+    //         }
+    //       } else {
+    //         this.lastYearIncome = 0
+    //         this.lastYearIncrease = ''
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // }
   }
 }
 </script>

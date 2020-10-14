@@ -1,7 +1,14 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="12" sm="12" md="8" lg="8" xl="8" class="default-container mar-top-3">
+      <b-col
+        cols="12"
+        sm="12"
+        md="8"
+        lg="8"
+        xl="8"
+        class="default-container mar-top-3"
+      >
         <b-row>
           <b-col
             cols="2"
@@ -12,7 +19,10 @@
             class="default-container align-center pad-top-10 pad-left-10 menu-patty"
           >
             <!-- <img src="../assets/menu-patty1.png" alt /> -->
-            <b-icon-power class="logout h2" @click="handleLogout"></b-icon-power>
+            <b-icon-power
+              class="logout h2"
+              @click="handleLogout"
+            ></b-icon-power>
           </b-col>
           <b-col
             cols="5"
@@ -74,7 +84,7 @@
           >
             <b-row cols="1">
               <b-col class="pad-upside">
-                <router-link to="/" v-b-tooltip.hover title="History">
+                <router-link to="/" v-b-tooltip.hover title="Home">
                   <img src="../assets/fork.png" alt />
                 </router-link>
               </b-col>
@@ -85,8 +95,15 @@
               </b-col>
               <b-col class="pad-upside" v-show="isAdmin">
                 <a href="#" v-b-tooltip.hover title="Category Menu">
-                  <router-link to="/category" v-b-tooltip.hover title="Category">
-                    <b-icon-layout-text-window class="h2"></b-icon-layout-text-window>
+                  <router-link
+                    to="/category"
+                    v-b-tooltip.hover
+                    title="Category"
+                  >
+                    <b-icon-journal-text
+                      style="color: black"
+                      class="h2"
+                    ></b-icon-journal-text>
                   </router-link>
                 </a>
               </b-col>
@@ -154,7 +171,11 @@
                           aria-label="Search"
                         />
                         <b-input-group-append>
-                          <b-button variant="info" size="sm" @click="searchProduct(form)">
+                          <b-button
+                            variant="info"
+                            size="sm"
+                            @click="searchProduct(form)"
+                          >
                             <b-icon-search></b-icon-search>
                           </b-button>
                         </b-input-group-append>
@@ -189,7 +210,7 @@
                     <b-form-select
                       v-model="order"
                       :options="optionsOrder"
-                      @change="getProduct()"
+                      @change="setOrderBy($event)"
                       class="mb-3"
                     ></b-form-select>
                   </b-col>
@@ -198,7 +219,7 @@
                     <b-form-select
                       v-model="order_type"
                       :options="optionsType"
-                      @change="getProduct()"
+                      @change="setOrderTypeBy($event)"
                       class="mb-3"
                     ></b-form-select>
                   </b-col>
@@ -217,19 +238,15 @@
                   <b-card
                     v-if="!isInCart(item)"
                     v-bind:title="item.product_name"
-                    v-bind:img-src="
-                      urlApi + item.product_image
-                    "
+                    v-bind:img-src="urlApi + item.product_image"
                     img-alt="Image"
                     img-top
                     tag="article"
-                    style="max-width: 20rem;"
+                    style="max-width: 20rem"
                     class="mb-2"
                   >
                     <b-card-text>
-                      {{
-                      formatCurrency(item.product_price)
-                      }}
+                      {{ formatCurrency(item.product_price) }}
                     </b-card-text>
 
                     <b-button
@@ -239,7 +256,8 @@
                       @click="addToCart(item)"
                       v-b-tooltip.hover
                       title="Add Order"
-                    >Add to Cart</b-button>
+                      >Add to Cart</b-button
+                    >
                     <b-button
                       v-else
                       block
@@ -247,9 +265,14 @@
                       @click="removeFromCart(item)"
                       v-b-tooltip.hover
                       title="Cancel Order"
-                    >Cancel</b-button>
+                      >Cancel</b-button
+                    >
 
-                    <b-container fluid class="bv-example-row mt-1 pr-0 pl-0" v-show="isAdmin">
+                    <b-container
+                      fluid
+                      class="bv-example-row mt-1 pr-0 pl-0"
+                      v-show="isAdmin"
+                    >
                       <b-row>
                         <b-col md="6">
                           <b-button
@@ -259,7 +282,10 @@
                             title="Edit Product"
                             class="mt-2"
                           >
-                            <ModalEditProduct :product="item" @getProduct="getProduct" />
+                            <ModalEditProduct
+                              :product="item"
+                              @getProduct="getProduct"
+                            />
                           </b-button>
                         </b-col>
                         <b-col md="6">
@@ -270,7 +296,10 @@
                             title="Delete Product"
                             class="mt-2"
                           >
-                            <ModalDeleteProduct :product="item" @getProduct="getProduct" />
+                            <ModalDeleteProduct
+                              :product="item"
+                              @getProduct="getProduct"
+                            />
                           </b-button>
                         </b-col>
                       </b-row>
@@ -279,19 +308,15 @@
                   <b-card
                     v-else
                     v-bind:title="item.product_name"
-                    v-bind:img-src="
-                      urlApi + item.product_image
-                    "
+                    v-bind:img-src="urlApi + item.product_image"
                     img-alt="menu"
                     img-top
                     tag="image-menu"
-                    style="max-width: 20rem;"
+                    style="max-width: 20rem"
                     class="mb-2"
                   >
                     <b-card-text>
-                      {{
-                      formatCurrency(item.product_price)
-                      }}
+                      {{ formatCurrency(item.product_price) }}
                     </b-card-text>
 
                     <b-button
@@ -301,7 +326,8 @@
                       @click="addToCart(item)"
                       v-b-tooltip.hover
                       title="Add Order"
-                    >Add to Cart</b-button>
+                      >Add to Cart</b-button
+                    >
                     <b-button
                       v-else
                       block
@@ -309,9 +335,14 @@
                       @click="removeFromCart(item)"
                       v-b-tooltip.hover
                       title="Cancel Order"
-                    >Cancel</b-button>
+                      >Cancel</b-button
+                    >
 
-                    <b-container fluid class="bv-example-row mt-1 pr-0 pl-0" v-show="isAdmin">
+                    <b-container
+                      fluid
+                      class="bv-example-row mt-1 pr-0 pl-0"
+                      v-show="isAdmin"
+                    >
                       <b-row>
                         <b-col md="6">
                           <b-button
@@ -332,7 +363,10 @@
                             title="Delete Product"
                             class="mt-2"
                           >
-                            <ModalDeleteProduct :product="item" @getProduct="getProduct" />
+                            <ModalDeleteProduct
+                              :product="item"
+                              @getProduct="getProduct"
+                            />
                           </b-button>
                         </b-col>
                       </b-row>
@@ -363,7 +397,12 @@
           </b-col>
         </b-row>
       </b-col>
-      <b-col md="4" lg="4" xl="4" class="cart-content default-container small-container">
+      <b-col
+        md="4"
+        lg="4"
+        xl="4"
+        class="cart-content default-container small-container"
+      >
         <div class="mar-top-20">
           <Cart
             :cart="cart"
@@ -402,7 +441,6 @@ export default {
         { value: 'product_id', text: 'Sort By' },
         { value: 'product_name', text: 'Product Name' },
         { value: 'product_price', text: 'Product Price' },
-        { value: 'category_id', text: 'Category ID' },
         { value: 'product_created_at', text: 'Product Created' }
       ],
       optionsType: [
@@ -455,11 +493,23 @@ export default {
   methods: {
     ...mapActions({ getProduct: 'getProducts' }),
     ...mapActions(['searchProduct']),
-    ...mapMutations(['setPage']),
+    ...mapMutations(['setPage', 'setOrder', 'setOrderType']),
     handlePageChange(numberPage) {
       this.$router.push(`?page=${numberPage}`)
       // this.page = numberPage
       this.setPage(numberPage)
+      this.getProduct()
+    },
+    setOrderBy(e) {
+      console.log(e)
+      this.setOrder(e)
+
+      this.getProduct()
+    },
+    setOrderTypeBy(e) {
+      console.log(e)
+      this.setOrderType(e)
+
       this.getProduct()
     },
     incrementCart(data) {

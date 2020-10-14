@@ -11,7 +11,14 @@
       >
         <b-icon-power class="logout h2"></b-icon-power>
       </b-col>
-      <b-col cols="10" sm="10" md="11" lg="11" xl="11" class="text-center pt-1 box-shadow">
+      <b-col
+        cols="10"
+        sm="10"
+        md="11"
+        lg="11"
+        xl="11"
+        class="text-center pt-1 box-shadow"
+      >
         <h2>Category</h2>
       </b-col>
     </b-row>
@@ -26,14 +33,14 @@
       >
         <b-row cols="1">
           <b-col class="pad-upside">
-            <a href="/">
+            <router-link to="/" v-b-tooltip.hover title="Home">
               <img src="../assets/fork.png" alt />
-            </a>
+            </router-link>
           </b-col>
           <b-col class="pad-upside">
-            <a href="history">
+            <router-link to="/history" v-b-tooltip.hover title="History">
               <img src="../assets/clipboard.png" alt />
-            </a>
+            </router-link>
           </b-col>
           <b-col class="pad-upside">
             <a href="#">
@@ -73,9 +80,7 @@
                 class="mr-1"
               >
                 <b-icon-pencil-square
-                  @click="
-                  showModalEdit(row.item)
-              "
+                  @click="showModalEdit(row.item)"
                 ></b-icon-pencil-square>
               </b-button>
               <b-button
@@ -84,11 +89,7 @@
                 @click="info(row.item, row.index, $event.target)"
                 class="mr-1"
               >
-                <b-icon-trash
-                  @click="
-                  showModalDelete(row.item)
-                "
-                ></b-icon-trash>
+                <b-icon-trash @click="showModalDelete(row.item)"></b-icon-trash>
               </b-button>
             </template>
           </b-table>
@@ -132,10 +133,17 @@
               <b-form @submit="onSubmit" @reset="onReset" v-if="show">
                 <b-row>
                   <b-col cols="2" class="form-name">
-                    <b-form-group id="input-group-1" label="Name:" label-for="input-1"></b-form-group>
+                    <b-form-group
+                      id="input-group-1"
+                      label="Name:"
+                      label-for="input-1"
+                    ></b-form-group>
                   </b-col>
                   <b-col cols="10">
-                    <b-form-input v-model="form.category_name" placeholder="Enter category name"></b-form-input>
+                    <b-form-input
+                      v-model="form.category_name"
+                      placeholder="Enter category name"
+                    ></b-form-input>
                   </b-col>
                 </b-row>
               </b-form>
@@ -145,20 +153,28 @@
               variant="primary"
               block
               @click="
-          hideModalEdit()
-          editCategory()
-        "
-            >Confirm</b-button>
+                hideModalEdit()
+                editCategory()
+              "
+              >Confirm</b-button
+            >
             <b-button
               class="mt-2"
               variant="danger"
               block
               @click="toggleModalEdit"
-              style="color: white;"
-            >Cancel</b-button>
+              style="color: white"
+              >Cancel</b-button
+            >
           </b-modal>
-          <b-modal ref="my-modal-delete" hide-footer title="Confirmation Delete Product">
-            <div class="d-block text-center">Are you sure you want to delete this product ?</div>
+          <b-modal
+            ref="my-modal-delete"
+            hide-footer
+            title="Confirmation Delete Product"
+          >
+            <div class="d-block text-center">
+              Are you sure you want to delete this product ?
+            </div>
             <b-row>
               <b-col cols="3" md="3"></b-col>
               <b-col cols="3" md="3">
@@ -166,18 +182,20 @@
                   class="mt-4"
                   variant="warning"
                   @click="toggleModalDelete"
-                  style="color: white;"
-                >Cancel</b-button>
+                  style="color: white"
+                  >Cancel</b-button
+                >
               </b-col>
               <b-col cols="3" md="3">
                 <b-button
                   class="mt-4"
                   variant="danger"
                   @click="
-              hideModalDelete()
-              delCategory()
-            "
-                >Confirm</b-button>
+                    hideModalDelete()
+                    delCategory()
+                  "
+                  >Confirm</b-button
+                >
               </b-col>
             </b-row>
           </b-modal>

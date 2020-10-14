@@ -7,6 +7,7 @@
             <h5 class="card-title text-center">Sign In</h5>
             <b-form @submit.prevent="onSubmit" @reset.prevent="onReset">
               <b-form-input
+                v-focus
                 type="email"
                 v-model="form.user_email"
                 placeholder="Input Your Email ..."
@@ -34,7 +35,8 @@
                   @click.prevent="onRegister"
                   class="register-here"
                   type="register"
-                >Register here</a>
+                  >Register here</a
+                >
               </p>
             </div>
           </div>
@@ -66,17 +68,36 @@ export default {
     // [3]
     ...mapState(['name'])
   },
+  directives: {
+    focus: {
+      // definisi direktif
+      inserted: function (el) {
+        el.focus()
+      }
+    }
+  },
   methods: {
     ...mapActions(['login']),
     onSubmit() {
       // console.log(this.form)
       this.login(this.form)
-        .then((result) => {
-          console.log(result)
-          this.$router.push('/')
+        .then((response) => {
+          this.$bvToast.toast('Login success', {
+            title: 'Success',
+            variant: 'success',
+            solid: true
+          })
+          setTimeout(() => {
+            this.$router.push('/')
+          }, 1000)
         })
         .catch((error) => {
           console.log(error)
+          this.$bvToast.toast(error, {
+            title: 'Warning',
+            variant: 'danger',
+            solid: true
+          })
         })
     },
     onRegister() {

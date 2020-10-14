@@ -28,6 +28,12 @@ export default {
     },
     setPage(state, payload) {
       state.pagination.page = payload
+    },
+    setOrder(state, payload) {
+      state.order = payload
+    },
+    setOrderType(state, payload) {
+      state.order_type = payload
     }
   },
   actions: {

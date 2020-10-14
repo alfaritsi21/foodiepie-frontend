@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -139,7 +139,7 @@ export default {
       // Note `isActive` is left out and will not appear in the rendered table
       fields: ['invoice', 'cashier', 'date', 'orders', 'amount'],
       // items: [],
-      chartData: {},
+      // chartData: {},
       chartFilter: 'month',
       optionsChart: [{ value: 'month', text: 'This Month' }],
       filter: 'today',
@@ -176,8 +176,8 @@ export default {
       countOrder: 'getcountOrderData',
       lastWeekCountOrder: 'getLastWeekCountOrderData',
       yearlyIncome: 'getYearlyIncomeData',
-      lastYearIncome: 'getLastYearIncomeData'
-      // chartData: 'getChartData'
+      lastYearIncome: 'getLastYearIncomeData',
+      chartData: 'getChartData'
     })
   },
   methods: {
@@ -231,7 +231,7 @@ export default {
         style: 'currency',
         currency: 'IDR'
       })
-    },
+    }
     // getCountOrder() {
     //   const date = new Date().toISOString().slice(0, 10)
     //   console.log(date)
@@ -272,30 +272,30 @@ export default {
     //       console.log(error)
     //     })
     // },
-    getMonthlyIncomeData() {
-      const date = new Date().toISOString().slice(0, 10)
-      // console.log(date)
-      axios
-        .post('http://127.0.0.1:3001/history/income/month', { date }, {})
-        .then((response) => {
-          const monthlyIncomeData = response.data.data
+    // getMonthlyIncomeData() {
+    //   const date = new Date().toISOString().slice(0, 10)
+    //   // console.log(date)
+    //   axios
+    //     .post('http://127.0.0.1:3001/history/income/month', { date }, {})
+    //     .then((response) => {
+    //       const monthlyIncomeData = response.data.data
 
-          const jsonData = {}
-          monthlyIncomeData.forEach((item) => {
-            var columnName = item.date
-            if (item.income.length) {
-              jsonData[columnName] = item.income[0].daily_income
-            } else {
-              jsonData[columnName] = 0
-            }
-          })
+    //       const jsonData = {}
+    //       monthlyIncomeData.forEach((item) => {
+    //         var columnName = item.date
+    //         if (item.income.length) {
+    //           jsonData[columnName] = item.income[0].daily_income
+    //         } else {
+    //           jsonData[columnName] = 0
+    //         }
+    //       })
 
-          this.chartData = jsonData
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
+    //       this.chartData = jsonData
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // }
     // getYearIncome() {
     //   const date = new Date().toISOString().slice(0, 10)
     //   // console.log(date)

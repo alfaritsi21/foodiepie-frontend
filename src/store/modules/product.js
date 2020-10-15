@@ -2,6 +2,7 @@ import axios from 'axios'
 
 export default {
   state: {
+    urlApi: process.env.VUE_APP_URL,
     pagination: {
       page: 1,
       totalPage: 0,
@@ -40,7 +41,7 @@ export default {
     getProducts(context, payload) {
       axios
         .get(
-          `http://127.0.0.1:3001/product?page=${context.state.pagination.page}&limit=${context.state.pagination.limit}&order=${context.state.order}&order_type=${context.state.order_type}`
+          `${context.state.urlApi}product?page=${context.state.pagination.page}&limit=${context.state.pagination.limit}&order=${context.state.order}&order_type=${context.state.order_type}`
         )
         .then(response => {
           context.commit('setProduct', response.data)
@@ -61,7 +62,7 @@ export default {
       // console.log(payload)
       return new Promise((resolve, reject) => {
         axios
-          .post('http://127.0.0.1:3001/product', payload)
+          .post(`${context.state.urlApi}product`, payload)
           .then(response => {
             console.log(response)
             resolve(response.data)
@@ -84,7 +85,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios
           .patch(
-            `http://127.0.0.1:3001/product/${payload.product_id}`,
+            `${context.state.urlApi}product/${payload.product_id}`,
             data,
             {}
           )
@@ -102,7 +103,7 @@ export default {
     deleteProduct(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .delete(`http://127.0.0.1:3001/product/${payload}`)
+          .delete(`${context.state.urlApi}product/${payload}`)
           .then(response => {
             console.log(response)
             resolve(response.data)
@@ -118,7 +119,7 @@ export default {
       console.log(payload.product)
       return new Promise((resolve, reject) => {
         axios
-          .post('http://127.0.0.1:3001/product/search/', payload, {})
+          .post(`${context.state.urlApi}product/search/`, payload, {})
           .then(response => {
             context.commit('setProduct', response.data)
             context.commit('setCartButton', response.data)

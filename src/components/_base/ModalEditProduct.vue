@@ -113,6 +113,7 @@ export default {
   props: ['product'],
   data() {
     return {
+      urlApi: process.env.VUE_APP_URL,
       product_id: [],
       form: {
         product_id: this.product.product_id,
@@ -189,8 +190,8 @@ export default {
     },
     getCategory() {
       axios
-        .get('http://127.0.0.1:3001/category')
-        .then((response) => {
+        .get(`${this.urlApi}category`)
+        .then(response => {
           const categories = response.data.data
           console.log(categories)
           for (let index = 0; index < categories.length; index++) {
@@ -203,7 +204,7 @@ export default {
             ]
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
@@ -218,7 +219,7 @@ export default {
       console.log(this.form)
 
       this.patchProduct(this.form)
-        .then((response) => {
+        .then(response => {
           console.log(response)
           this.getProducts()
           this.makeToast(
@@ -226,7 +227,7 @@ export default {
             `Product ${this.form.product_name} succesfully edited`
           )
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
           this.$bvToast.toast(error.data.msg, {
             title: 'Warning',

@@ -2,6 +2,7 @@ import axios from 'axios'
 
 export default {
   state: {
+    urlApi: process.env.VUE_APP_URL,
     category: [],
     categoryOptions: []
   },
@@ -25,12 +26,13 @@ export default {
     getCategories(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .get('http://127.0.0.1:3001/category')
+          .get(`${context.state.urlApi}category`)
           .then(response => {
             // const categories = response.data.data
             context.commit('setCategory', response.data)
             context.commit('setCategoryItem', response.data)
             resolve(response.data.data)
+            console.log('berhasil')
           })
           .catch(error => {
             console.log(error)
@@ -41,7 +43,7 @@ export default {
       // console.log(payload)
       return new Promise((resolve, reject) => {
         axios
-          .post('http://127.0.0.1:3001/category', payload)
+          .post(`${context.state.urlApi}category`, payload)
           .then(response => {
             console.log(response)
             resolve(response.data)
@@ -57,7 +59,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios
           .patch(
-            `http://127.0.0.1:3001/category/${payload.category_id}`,
+            `${context.state.urlApi}category/${payload.category_id}`,
             payload,
             {}
           )
@@ -75,7 +77,7 @@ export default {
     deleteCategory(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .delete(`http://127.0.0.1:3001/category/${payload.category_id}`)
+          .delete(`${context.state.urlApi}category/${payload.category_id}`)
           .then(response => {
             console.log(response)
             resolve(response.data)

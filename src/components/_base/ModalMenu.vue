@@ -105,6 +105,7 @@ import { mapActions } from 'vuex'
 export default {
   data() {
     return {
+      urlApi: process.env.VUE_APP_URL,
       form: {
         product_name: '',
         product_price: 0,
@@ -140,7 +141,7 @@ export default {
       data.append('product_image', this.form.product_image)
 
       this.addProducts(data)
-        .then((response) => {
+        .then(response => {
           console.log(response)
           this.makeToast(
             'success',
@@ -148,7 +149,7 @@ export default {
           )
           this.form = {}
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
           this.$bvToast.toast(error.data.msg, {
             title: 'Warning',
@@ -195,8 +196,8 @@ export default {
     },
     getCategory() {
       axios
-        .get('http://127.0.0.1:3001/category')
-        .then((response) => {
+        .get(`${this.urlApi}category`)
+        .then(response => {
           const categories = response.data.data
           console.log(categories)
           for (let index = 0; index < categories.length; index++) {
@@ -209,7 +210,7 @@ export default {
             ]
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },

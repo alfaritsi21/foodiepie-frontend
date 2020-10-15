@@ -1,6 +1,15 @@
 <h1 align='center'>Vue JS - Foodiepie</h1>
+<p align="center">
+    <a href="https://foodiepie.netlify.app/">View Demo</a>
+    ·
+    <a href="https://github.com/alfaritsi21/foodiepie-frontend/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/alfaritsi21/foodiepie-frontend/issues">Request Feature</a>
+  </p>
 
-A system website app for order some product of food and beverages. [More about Vue](https://vuejs.org/)
+![Image Banner](https://raw.githubusercontent.com/alfaritsi21/foodiepie-frontend/master/foodiepie.jpg)
+
+A system website app for order some product of food and beverages. In this website you can order some available menu. With Foodiepie you can see the order history from history page and you can maintain the transaction on foodiepie. [More about Vue](https://vuejs.org/)
 
 ## Built With
 
@@ -13,32 +22,27 @@ A system website app for order some product of food and beverages. [More about V
 2. Node_modules `npm install` or `yarn install`
 3. Backend API Foodiepie [`here`](https://github.com/alfaritsi21/foodiepie-backend)
 
-## How to Install
+## Getting Started
 
-1. Download this Project or you can type `git clone https://github.com/alfaritsi21/foodiepie-frontend`
+1. Download this Project or you can type `git clone https://github.com/alfaritsi21/foodiepie-frontend.git`
 2. Open app's directory in CMD or Terminal
 3. Type `npm install` or `yarn install`
-4. Type `npm start`
-
-## Visit the Web
-
-You can visit the web [`here`](https://www.google.com/)
-
-## Compiles and hot-reloads for development
+4. Add .env file at root folder project
 
 ```
-npm run serve
-```
-
-## Compiles and minifies for production
+VUE_APP_URL=https://backend-foodiepie.fwdev.online/
+VUE_APP_URL1=http://127.0.0.1:3001/
 
 ```
-npm run build
-```
 
-## Customize configuration
+5. Type `npm run serve`
 
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Acknowledgements
+
+- [Axios](https://www.npmjs.com/package/axios)
+- [Vuex](https://vuex.vuejs.org/)
+- [Express](https://www.npmjs.com/package/express)
+- [vue-Bootstrap](https://bootstrap-vue.org/)
 
 ## License
 

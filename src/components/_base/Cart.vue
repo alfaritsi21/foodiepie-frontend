@@ -194,7 +194,7 @@
 import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex'
 
-// import JsPDF from 'jspdf'
+import JsPDF from 'jspdf'
 
 export default {
   name: 'Cart',
@@ -220,23 +220,23 @@ export default {
     })
   },
   methods: {
-    // createPDF() {
-    //   const doc = new JsPDF()
-    //   doc.setFontSize(14)
-    //   doc.text(
-    //     `Checkout Detail
-    //     Receipt no : #${this.historyData.invoice}
-    //     Product Order Total : ${this.formatCurrency(this.calculateTotalOrder())}
-    //     PPn 10% : ${this.formatCurrency(this.calculateTotalOrder())}
-    //     Total Payment : ${this.formatCurrency(
-    //       this.calculateTotalOrder() + this.calculateTotalOrder() * 0.1
-    //     )}
-    //     Payment : Cash`,
-    //     15,
-    //     15
-    //   )
-    //   doc.save('a4.pdf')
-    // },
+    createPDF() {
+      const doc = new JsPDF()
+      doc.setFontSize(14)
+      doc.text(
+        `Checkout Detail
+        Receipt no : #${this.historyData.invoice}
+        Product Order Total : ${this.formatCurrency(this.calculateTotalOrder())}
+        PPn 10% : ${this.formatCurrency(this.calculateTotalOrder())}
+        Total Payment : ${this.formatCurrency(
+          this.calculateTotalOrder() + this.calculateTotalOrder() * 0.1
+        )}
+        Payment : Cash`,
+        15,
+        15
+      )
+      doc.save('a4.pdf')
+    },
     formatCurrency(number) {
       return number.toLocaleString('ID-JK', {
         style: 'currency',
@@ -305,10 +305,10 @@ export default {
     postHistory() {
       axios
         .post(`${this.urlApi}history`, this.historyData, {})
-        .then(response => {
+        .then((response) => {
           this.makeToast('success', 'Order has been successfully saved')
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
           this.makeToast('danger', 'Order Failed')
         })
@@ -317,7 +317,7 @@ export default {
       const isInCart = this.isInCart(data)
       if (isInCart) {
         const itemInCart = this.cart.find(
-          value => value.product_id === data.product_id
+          (value) => value.product_id === data.product_id
         )
         const index = this.cart.indexOf(itemInCart)
         if (index > -1) {

@@ -89,7 +89,7 @@
             <b-row align-h="between">
               <b-col cols="3">
                 <h3>Revenue</h3>
-                <button @click="showChart">aaa</button>
+                <!-- <button @click="showChart">aaa</button> -->
               </b-col>
               <b-col cols="3">
                 <b-form-select
